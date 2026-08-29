@@ -1,4 +1,14 @@
-baseURL = 'https://example.org/'
-languageCode = 'en-us'
-title = 'My New Hugo Site'
-theme = "PaperMod"
+baseURL = 'https://zhangyh596.github.io/'
+languageCode = 'zh-cn'
+title = 'zhangyh596 的技术博客'
+theme = 'PaperMod'
+
+[params]
+  description = 'AI Infra 与 C++ 方向的技术博客'
+  math = true
+
+[markup.goldmark.extensions.passthrough]
+enable = true
+[markup.goldmark.extensions.passthrough.delimiters]
+block = [['\[', '\]'], ['$$', '$$']]
+inline = [['\(', '\)']]

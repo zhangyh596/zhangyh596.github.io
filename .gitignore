@@ -1,0 +1,9 @@
+# Hugo 生成产物（不要提交）
+public/
+resources/_gen/
+.hugo_build.lock
+
+# 编辑器 / 系统文件
+.vscode/
+.idea/
+.DS_Store
