@@ -153,7 +153,7 @@ p效果是一样的，同时如果在\*的左边和右边都加上const，\*p和
 
 把变量本身传给函数，这就是传值调用
 
-    ​​​​void swap(int x, int y)
+    void swap(int x, int y)
     {
         int tmp = x;
         x = y;
@@ -177,7 +177,7 @@ p效果是一样的，同时如果在\*的左边和右边都加上const，\*p和
 
 将地址传递给函数就叫做传址调用，这样可以真正交换a，b，下面我们来实现一下
 
-    ​​void swap(int *x, int *y)
+    void swap(int *x, int *y)
     {
         int tmp = 0;
         tmp = *x;
