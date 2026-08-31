@@ -7,3 +7,6 @@ resources/_gen/
 .vscode/
 .idea/
 .DS_Store
+
+# 待导入的 CSDN 草稿（不入库）
+import/
