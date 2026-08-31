@@ -1,9 +1,9 @@
 ---
-title: 'qsort的运用（C语言指针扩展）'
-date: '2025-11-23T10:40:20+08:00'
+title: "qsort的运用（C语言指针扩展）"
+date: "2025-11-23T10:40:20+08:00"
 draft: false
-categories: ['C']
-tags: ['qsort', '排序', '函数指针']
+categories: ["C"]
+tags: ["qsort", "排序", "函数指针"]
 ---
 为了引入qsort这一排序，我会先带大家逐步深入，同时内容有关指针，希望大家没看我之前写的指针内容的可以先去看一下才能达到更好的效果
 
@@ -17,7 +17,10 @@ tags: ['qsort', '排序', '函数指针']
 
 ```c
 #include <stdio.h>
+```
 
+
+```c
 void bubble_sort(int arr[], int sz)
 {
     int i = 0;
@@ -53,6 +56,7 @@ int main()
 }
 ```
 
+
 ![](/images/c/d5e91a43dda148d7ac92aec723a00aae.png)
 
 这样就实现了我们的冒泡排序，那么有没有什么办法可以优化呢
@@ -61,7 +65,10 @@ int main()
 
 ```c
 #include <stdio.h>
+```
 
+
+```c
 void bubble_sort(int arr[], int sz)
 {
     int i = 0;
@@ -100,6 +107,7 @@ int main()
     }
 }
 ```
+
 
 ## 2.回调函数
 
@@ -181,9 +189,22 @@ int main()
 }
 ```
 
+
 ![](/images/c/bae869115dd64d4f80e3f48749a285d1.png)
 
-![](/images/c/51013c2b37ce4e6a99ccd632f654fe88.png))
+![](/images/c/51013c2b37ce4e6a99ccd632f654fe88.png)
+
+这两部分就构成了回调函数
+
+## 3.qsort的使用
+
+qsort有什么用呢？
+
+前面我们学习了冒泡排序，我们不难发现冒泡排序只能对int类型的元素进行排序，而接下来我们要学习的qsort可以对任意类型的数组进行排序并且无序通过手动实现排序算法
+
+### qsort要怎么用
+
+![](/images/c/6ca4daf4dc42489e83abdef5eb41a341.png)
 
 base：要排序的数组的首地址
 
@@ -201,7 +222,10 @@ compar：比较函数的指针（这其实就是一个回调函数）
 
 ```c
 #include <stdio.h>
+```
 
+
+```c
 int compar(const void* p1, const void* p2)
 {
     return (*(int*)p1) - (*((int*)p2));
@@ -218,6 +242,7 @@ int main()
     return 0;
 }
 ```
+
 
 #### 排序结构体的数据
 
@@ -244,6 +269,7 @@ int main()
     return 0;
 }
 ```
+
 
 排序前![](/images/c/c7f0494df6de47789c5c9e381b520e68.png)
 
@@ -273,6 +299,7 @@ int main()
 }
 ```
 
+
 排序前![](/images/c/39987b1e89954667af369033f8e945ff.png)
 
 排序后![](/images/c/2b2aff3a11cc45268067b6455cfd1f96.png)
@@ -283,7 +310,10 @@ int main()
 
 ```c
 #include <stdio.h>
+```
 
+
+```c
 //回调函数
 int compar(const void* p1, const void* p2)
 {
@@ -312,7 +342,10 @@ void my_qsort(void* base, size_t count, size_t size, int(*cmp)(void*, void*))
         {
             //(char *)base + j*size 是第j个元素的地址
             //(char *)base + (j + 1)*size 是第j+1个元素的地址
+```
 
+
+```c
             //使用比较函数判断是否需要交换
             if (cmp((char*)base + j * size, (char*)base + (j + 1) * size) > 0)
             {
@@ -335,6 +368,7 @@ int main()
     return 0;
 }
 ```
+
 
 解析关键点
 
