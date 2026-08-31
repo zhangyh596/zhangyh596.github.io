@@ -19,22 +19,34 @@ inline = [['\(', '\)']]
     url = '/'
     weight = 1
   [[menu.main]]
-    name = '笔记'
-    url = '/notes/'
+    name = 'C 语言'
+    url = '/c/'
     weight = 2
+  [[menu.main]]
+    name = 'C++'
+    url = '/cpp/'
+    weight = 3
+  [[menu.main]]
+    name = '数据结构'
+    url = '/data-structures/'
+    weight = 4
+  [[menu.main]]
+    name = '做题心得'
+    url = '/practice/'
+    weight = 5
+  [[menu.main]]
+    name = 'AI Infra'
+    url = '/ai-infra/'
+    weight = 6
   [[menu.main]]
     name = '论文'
     url = '/papers/'
-    weight = 3
-  [[menu.main]]
-    name = 'CSDN 旧文'
-    url = '/csdn/'
-    weight = 4
+    weight = 7
   [[menu.main]]
     name = '分类'
     url = '/categories/'
-    weight = 5
+    weight = 8
   [[menu.main]]
     name = '标签'
     url = '/tags/'
-    weight = 6
+    weight = 9
