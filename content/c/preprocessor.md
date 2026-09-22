@@ -17,10 +17,7 @@ tags: ["预处理", "宏", "define", "include"]
 
 ```c
 #include <stdio.h>
-```
 
-
-```c
 int main()
 {
     printf("源文件：% s\n行号：% d", __FILE__, __LINE__);
@@ -55,15 +52,9 @@ int main()
 
 ```c
 #include <stdio.h>
-```
 
-
-```c
 #define SQUARE(x) x*x
-```
 
-
-```c
 int main()
 {
     printf("%d", SQUARE(5));
@@ -76,15 +67,9 @@ int main()
 
 ```c
 #include <stdio.h>
-```
 
-
-```c
 #define SQUARE(x) x*x
-```
 
-
-```c
 int main()
 {
     int a = 5;
@@ -106,15 +91,9 @@ int main()
 
 ```c
 #include <stdio.h>
-```
 
-
-```c
 #define SQUARE(x) (x)*(x)
-```
 
-
-```c
 int main()
 {
     int a = 5;
@@ -134,15 +113,9 @@ int main()
 
 ```c
 #include <stdio.h>
-```
 
-
-```c
 #define MAX(a, b) ( (a) > (b) ? (a) : (b) )
-```
 
-
-```c
 int main()
 {
     int x = 5;
@@ -218,15 +191,9 @@ z = ((x++) > (y++) ? (x++) : (y++));
 
 ```c
 #include <stdio.h>
-```
 
-
-```c
 #define PRINT(n) printf("the value of "#n" is %d", n)
-```
 
-
-```c
 int main()
 {
     int a = 5;
@@ -251,10 +218,7 @@ int int_max(int x, int y)
 {
     return x > y ? x : y;
 }
-```
 
-
-```c
 float float_max(float x, float y)
 {
     return x > y ? x : y;
@@ -270,16 +234,10 @@ type type##_max(type x, type y) \
 {                               \
       return (x>y?x:y);         \
 }
-```
 
-
-```c
 GENERIC_MAX(int)
 GENERIC_MAX(float)
-```
 
-
-```c
 int main()
 {
     int a = int_max(2, 3);
@@ -339,31 +297,19 @@ GENERIC_MAX(float)  // 生成了函数：float type_max(...)**
 
 ```c
 #define WINDOWS_VERSION 10
-```
 
-
-```c
 #if WINDOWS_VERSION >= 11
     // 只有当版本 >= 11 时，这行代码才会被编译进去
     printf("正在使用 Windows 11 或更高版本，启用圆角窗口特效。\n");
-```
 
-
-```c
 #elif WINDOWS_VERSION == 10
     // 如果上面的不满足，且版本是 10，这行会被编译
     printf("正在使用 Windows 10，启用磁贴特效。\n");
-```
 
-
-```c
 #else
     // 如果上面都不满足，这行会被编译
     printf("老版本系统，使用经典主题。\n");
-```
 
-
-```c
 #endif // 必须有这个结束符！
 ```
 
@@ -375,31 +321,19 @@ GENERIC_MAX(float)  // 生成了函数：float type_max(...)**
 
 ```c
 #include <stdio.h>
-```
 
-
-```c
 // 打开这个开关（定义它），就会打印日志
 // 注释掉这行，日志代码就仿佛“消失”了
 #define DEBUG_MODE 
-```
 
-
-```c
 int main() {
     printf("程序正在运行...\n");
-```
 
-
-```c
 #ifdef DEBUG_MODE
     // 只有定义了 DEBUG_MODE，这行才会存在
     printf("[调试信息] 变量 x 的值是 100\n");
 #endif
-```
 
-
-```c
     return 0;
 }
 ```

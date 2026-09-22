@@ -22,10 +22,7 @@ tags: ["内存函数", "memcpy", "memmove", "memset", "memcmp"]
 ```c
 #include <stdio.h>
 #include <string.h>
-```
 
-
-```c
 int main()
 {
     char src[] = "hello,world";
@@ -42,10 +39,7 @@ int main()
 ```c
 #include <stdio.h>
 #include <string.h>
-```
 
-
-```c
 int main()
 {
     int src[5] = { 1,2,3,4,5 };
@@ -65,20 +59,14 @@ int main()
 ```c
 #include <stdio.h>
 #include <string.h>
-```
 
-
-```c
 typedef struct 
 {
     int id;
     char name[20];
     int age;
 }student;
-```
 
-
-```c
 int main()
 {
     student s1 = { 2530,"zhangsan",18 };
@@ -106,20 +94,14 @@ void* my_memcpy(void* dest, const void* src, size_t n)
     }
     return ret;
 }
-```
 
-
-```c
 typedef struct 
 {
     int id;
     char name[20];
     int age;
 }student;
-```
 
-
-```c
 int main()
 {
     student s1 = { 2530,"zhangsan",18 };
@@ -143,10 +125,7 @@ int main()
 ```c
 #include <stdio.h>
 #include <string.h>
-```
 
-
-```c
 int main()
 {
     int arr1[] = { 1,2,3,4,5,6,7,8,9,10 };
@@ -173,10 +152,7 @@ int main()
 
 ```c
 #include <stdio.h>
-```
 
-
-```c
 void* my_memmove(void* dest, const void* src, size_t n)
 {
     void* ret = dest;
@@ -202,12 +178,9 @@ void* my_memmove(void* dest, const void* src, size_t n)
     }
     return ret;
 }
+
 int main()
 {
-```
-
-
-```c
     int arr1[] = { 1,2,3,4,5,6,7,8,9,10 };
     memmove(arr1 + 2, arr1, 20);//在arr1+2的位置向后复制初始arr1的后20个字节
     for (int i = 0; i < 10; i++)
@@ -234,10 +207,7 @@ int main()
 ```c
 #include <stdio.h>
 #include <string.h>
-```
 
-
-```c
 int main()
 {
     int arr[10];
@@ -266,18 +236,12 @@ int main()
 ```c
 #include <stdio.h>
 #include <string.h>
-```
 
-
-```c
 int main()
 {
     int arr1[] = { 1,2,3,4,5 };
     int arr2[] = { 1,2,3,4,6 };
-```
 
-
-```c
     int ret = memcmp(arr1, arr2, sizeof(arr1));
     printf("%d", ret);
     return 0;
@@ -307,14 +271,12 @@ int my_memcmp(const void* ptr1, const void* ptr2, size_t n)
     }
     return 0;
 }
+
 int main()
 {
-        int arr1[] = { 1,2,3,4,5 };
+    int arr1[] = { 1,2,3,4,5 };
     int arr2[] = { 1,2,3,4,6 };
-```
 
-
-```c
     int ret = my_memcmp(arr1, arr2, sizeof(arr1));
     printf("%d", ret);
     return 0;

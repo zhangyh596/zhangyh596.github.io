@@ -37,17 +37,11 @@ tags: ["数据存储", "原码", "反码", "补码"]
 
 ```c
 #include <stdio.h>
-```
 
-
-```c
 int main()
 {
     int a = 0x11223344;
-```
 
-
-```c
     return 0;
 }
 ```
@@ -63,10 +57,7 @@ int main()
 
 ```c
 #include <stdio.h>
-```
 
-
-```c
 int main()
 {
     int a = 1;

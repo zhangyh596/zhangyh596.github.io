@@ -78,10 +78,7 @@ struct _iobuf
        int   _bufsiz;
        char *_tmpfname;
 };
-```
 
-
-```c
 typedef struct _iobuf FILE;
 ```
 
@@ -153,10 +150,7 @@ stream指向已打开文件的FILE\*指针（由fopen返回）
 
 ```c
 #include <stdio.h>
-```
 
-
-```c
 int main()
 {
     FILE* pf = fopen("data.txt", "w");
@@ -187,10 +181,7 @@ int main()
 
 ```c
 #include <stdio.h>
-```
 
-
-```c
 int main()
 {
     FILE* pf = fopen("test.txt", "r");
@@ -221,10 +212,7 @@ fputc
 
 ```c
 #include <stdio.h>
-```
 
-
-```c
 int main()
 {
     FILE* pf = fopen("test.txt", "w");
@@ -260,10 +248,7 @@ int main()
 
 ```c
 #include <stdio.h>
-```
 
-
-```c
 int main()
 {
     FILE* pf = fopen("test.txt", "r");
@@ -296,10 +281,7 @@ int main()
 
 ```c
 #include <stdio.h>
-```
 
-
-```c
 int main()
 {
     FILE* pf = fopen("test.txt", "w");
@@ -314,10 +296,7 @@ int main()
     fputs(str2, pf);
     fclose(pf);
     pf = NULL;
-```
 
-
-```c
     return 0;
 }
 ```
@@ -338,10 +317,7 @@ int main()
 
 ```c
 #include <stdio.h>
-```
 
-
-```c
 int main()
 {
     //data.txt的内容是10 3.14 hello
@@ -376,10 +352,7 @@ int main()
 
 ```c
 #include <stdio.h>
-```
 
-
-```c
 int main()
 {
     FILE* pf = fopen("data.txt", "w");
@@ -412,10 +385,7 @@ int main()
 
 ```c
 #include <stdio.h>
-```
 
-
-```c
 int main()
 {
     FILE* pf = fopen("data.bin", "rb");
@@ -451,10 +421,7 @@ int main()
 
 ```c
 #include <stdio.h>
-```
 
-
-```c
 int main()
 {
     FILE* pf = fopen("data.bin", "wb");
@@ -497,10 +464,7 @@ sscanf（数据源：字符串（char数组）），从内存中的字符串提�
 
 ```c
 #include <stdio.h>
-```
 
-
-```c
 int main()
 {
     char s[] = "zhangsan 20 90.5";
@@ -538,10 +502,7 @@ sprintf（输出目标：字符串（char数组）），将格式化数据写入
 
 ```c
 #include <stdio.h>
-```
 
-
-```c
 int main()
 {
     char buf[100];
@@ -579,10 +540,7 @@ int main()
 
 ```c
 #include <stdio.h>
-```
 
-
-```c
 int main()
 {
     FILE* pf = fopen("test.txt", "r");
@@ -619,10 +577,7 @@ int main()
 
 ```c
 #include <stdio.h>
-```
 
-
-```c
 int main()
 {
     FILE* pf = fopen("test.txt", "rb");
@@ -652,11 +607,7 @@ rewind（pf）等价于fseek（pf，0L，SEEK_SET），但fseek会返回int类�
 
 ```c
 #include <stdio.h>
-```
 
-
-
-```c
 int main()
 {
     FILE* pf = fopen("test.txt", "r");
@@ -667,10 +618,7 @@ int main()
     char buf[100];
     fgets(buf, sizeof(buf), pf);
     printf("第一次读取%s\n", buf);
-```
 
-
-```c
     rewind(pf);
     fgets(buf, sizeof(buf), pf);
     printf("第二次读取%s", buf);
@@ -702,10 +650,7 @@ fgets ）
 
 ```c
 #include <stdio.h>
-```
 
-
-```c
 int main()
 {
     FILE* pf = fopen("test.txt", "r");
@@ -745,10 +690,7 @@ int main()
 
 ```c
 #include <stdio.h>
-```
 
-
-```c
 int main()
 {
     FILE* pf = fopen("test.txt", "r");

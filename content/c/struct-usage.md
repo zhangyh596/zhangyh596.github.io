@@ -44,10 +44,7 @@ struct student
 
 ```c
 #include <stdio.h>
-```
 
-
-```c
 struct student
 {
     char name[20];//名字
@@ -55,10 +52,7 @@ struct student
     char sex[5];//性别
     char id[20];//学号
 };
-```
 
-
-```c
 int main()
 {
     struct student s = { "zhangsan",20,"男","2025" };
@@ -75,10 +69,7 @@ int main()
 
 ```c
 #include <stdio.h>
-```
 
-
-```c
 struct student
 {
     char name[20];//名字
@@ -86,10 +77,7 @@ struct student
     char sex[5];//性别
     char id[20];//学号
 };
-```
 
-
-```c
 int main()
 {
     struct student s = { .age = 20,.name = "zhangsan",.id = "2025",.sex = "男" };
@@ -110,10 +98,7 @@ int main()
 
 ```c
 #include <stdio.h>
-```
 
-
-```c
 struct student
 {
     char name[20];//名字
@@ -121,10 +106,7 @@ struct student
     char sex[5];//性别
     char id[20];//学号
 };
-```
 
-
-```c
 int main()
 {
     struct student s = { .age = 20,.name = "zhangsan",.id = "2025",.sex = "男" };
@@ -226,22 +208,21 @@ Linus中gcc没有默认对齐数，对齐数就是成员自身大小
 
 ```c
 #include <stdio.h>
-```
 
-
-```c
 struct s1
 {
     char c1;//偏移0，占1字节
     int i;//偏移到4，（中间浪费了三个字节），占4个字节
     char c2;//偏移8，占1字节
 };//最终需是最大对齐数的整数倍，故结构体大小是12（再次浪费了三个字节）
+
 struct s2
 {
     char c1;//偏移0，占1字节
     struct s1 s;//偏移到4，（中间浪费了三个字节），占12个字节
     double d;//偏移16，占8字节
 };//24是最大对齐数的整数倍，故结构体大小是24
+
 int main()
 {
     printf("%d\n", sizeof(struct s1));
@@ -274,6 +255,7 @@ struct s
     int i;//偏移1，占4字节
     char c2;//偏移5，占1字节
 };//结构体总大小6是1的整数倍
+
 int main()
 {
     printf("%d", sizeof(struct s));
@@ -290,10 +272,7 @@ int main()
 
 ```c
 #include <stdio.h>
-```
 
-
-```c
 struct s
 {
     int arr[1000];
@@ -393,10 +372,7 @@ struct A
 
 ```c
 #include <stdio.h>
-```
 
-
-```c
 struct A
 {
     int a : 2;
@@ -404,6 +380,7 @@ struct A
     int c : 10;
     int d : 30;
 };
+
 int main()
 {
     struct A s = { 0 };

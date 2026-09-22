@@ -32,10 +32,7 @@ tags: ["动态内存", "malloc", "free", "calloc", "realloc"]
 ```c
 #include <stdio.h>
 #include <stdlib.h>
-```
 
-
-```c
 int main()
 {
     int n = 5;
@@ -74,10 +71,7 @@ int main()
 ```c
 #include <stdio.h>
 #include <stdlib.h>
-```
 
-
-```c
 int main()
 {
     int n = 5;
@@ -118,10 +112,7 @@ realloc在调整内存空间存在两种情况
 ```c
 #include <stdio.h>
 #include <stdlib.h>
-```
 
-
-```c
 int main()
 {
     int n = 3;

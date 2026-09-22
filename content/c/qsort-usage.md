@@ -17,10 +17,7 @@ tags: ["qsort", "排序", "函数指针"]
 
 ```c
 #include <stdio.h>
-```
 
-
-```c
 void bubble_sort(int arr[], int sz)
 {
     int i = 0;
@@ -37,6 +34,7 @@ void bubble_sort(int arr[], int sz)
         }
     }
 }
+
 int main()
 {
     int arr[10] = { 2,5,9,7,8,6,4,3,1,10 };
@@ -65,10 +63,7 @@ int main()
 
 ```c
 #include <stdio.h>
-```
 
-
-```c
 void bubble_sort(int arr[], int sz)
 {
     int i = 0;
@@ -89,6 +84,7 @@ void bubble_sort(int arr[], int sz)
             break;
     }
 }
+
 int main()
 {
     int arr[10] = { 2,5,9,7,8,6,4,3,1,10 };
@@ -138,6 +134,7 @@ int div(int x, int y)
 {
     return x / y;
 }
+
 //回调函数
 void calc(int(*pf)(int x, int y))
 {
@@ -148,6 +145,7 @@ void calc(int(*pf)(int x, int y))
     ret = (*pf)(x, y);
     printf("ret = %d\n", ret);
 }
+
 int main()
 {
     int x, y;//操作数
@@ -222,10 +220,7 @@ compar：比较函数的指针（这其实就是一个回调函数）
 
 ```c
 #include <stdio.h>
-```
 
-
-```c
 int compar(const void* p1, const void* p2)
 {
     return (*(int*)p1) - (*((int*)p2));
@@ -310,16 +305,14 @@ int main()
 
 ```c
 #include <stdio.h>
-```
 
-
-```c
 //回调函数
 int compar(const void* p1, const void* p2)
 {
     //将void*强制转换为比较的类型
     return (*(int*)p1 - *(int*)p2);
 }
+
 //交换函数（任意类型都可以，所以用char类型逐字节交换）
 //size用于接收每个元素的大小
 void swap(void* p1, void* p2, size_t size)
@@ -331,6 +324,7 @@ void swap(void* p1, void* p2, size_t size)
         *((char*)p2 + i) = tmp;
     }
 }
+
 //参数类型和qsort一样
 void my_qsort(void* base, size_t count, size_t size, int(*cmp)(void*, void*))
 {
@@ -342,10 +336,7 @@ void my_qsort(void* base, size_t count, size_t size, int(*cmp)(void*, void*))
         {
             //(char *)base + j*size 是第j个元素的地址
             //(char *)base + (j + 1)*size 是第j+1个元素的地址
-```
 
-
-```c
             //使用比较函数判断是否需要交换
             if (cmp((char*)base + j * size, (char*)base + (j + 1) * size) > 0)
             {
@@ -355,6 +346,7 @@ void my_qsort(void* base, size_t count, size_t size, int(*cmp)(void*, void*))
         }
     }
 }
+
 int main()
 {
     //排序一个整型数组
