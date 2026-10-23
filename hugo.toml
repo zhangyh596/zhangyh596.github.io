@@ -13,6 +13,9 @@ enable = true
 block = [['\[', '\]'], ['$$', '$$']]
 inline = [['\(', '\)']]
 
+[markup.highlight]
+noClasses = false
+
 [menu]
   [[menu.main]]
     name = '首页'

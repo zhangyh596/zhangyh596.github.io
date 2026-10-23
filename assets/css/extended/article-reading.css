@@ -1,0 +1,286 @@
+/* Article reading styles; keep Markdown content and the theme source unchanged. */
+body:not(.list) {
+    --theme: #fbf9f5;
+    --primary: #374151;
+    --content: #374151;
+    --secondary: #6b7280;
+    --border: #dde3eb;
+    --code-bg: #eff2f5;
+    --code-block-bg: #24273a;
+    --article-heading: #373681;
+    --article-accent: #0f766e;
+    --article-surface: #ffffff;
+    --article-table-head: #eef1fa;
+    --article-stripe: #f6f8fb;
+    --article-quote: #edf5fc;
+    --article-quote-border: #8eafd0;
+    --article-note: #edf7f3;
+    background: var(--theme);
+}
+
+[data-theme="dark"] body:not(.list) {
+    --theme: #1d1e20;
+    --primary: #d8dee9;
+    --content: #d1d5db;
+    --secondary: #a4adbd;
+    --border: #3a4352;
+    --code-bg: #2b3340;
+    --code-block-bg: #24273a;
+    --article-heading: #b4bdf4;
+    --article-accent: #80d4c5;
+    --article-surface: #252c37;
+    --article-table-head: #30394b;
+    --article-stripe: #29323f;
+    --article-quote: #233347;
+    --article-quote-border: #779fc8;
+    --article-note: #213a35;
+}
+
+.post-single .post-title {
+    color: var(--article-heading);
+    font-size: clamp(1.9rem, 4vw, 2.6rem);
+    line-height: 1.4;
+}
+
+.post-content {
+    line-height: 1.9;
+}
+
+.post-content :is(h1, h2, h3, h4, h5, h6) {
+    color: var(--article-heading);
+    line-height: 1.45;
+    scroll-margin-top: 1.5rem;
+}
+
+.post-content h1 {
+    margin: 2.3rem 0 1.25rem;
+    font-size: 2.1rem;
+}
+
+.post-content h2 {
+    margin: 2.2rem 0 1.1rem;
+    padding-bottom: 0.45rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 1.65rem;
+}
+
+.post-content h3 {
+    margin: 1.8rem 0 0.9rem;
+    font-size: 1.35rem;
+}
+
+.post-content h4 {
+    font-size: 1.1rem;
+}
+
+.post-content h5 {
+    font-size: 1rem;
+}
+
+.post-content h6 {
+    font-size: 0.95rem;
+}
+
+.post-content > p:not(:last-child) {
+    margin-bottom: 1.3rem;
+}
+
+.post-content li {
+    margin-top: 0.45rem;
+}
+
+.post-content strong {
+    color: var(--article-accent);
+}
+
+.post-content :is(h1, h2, h3, h4, h5, h6) strong {
+    color: inherit;
+}
+
+.post-content a:not(.anchor) {
+    color: var(--article-accent);
+    text-decoration-color: color-mix(in srgb, var(--article-accent) 45%, transparent);
+    text-decoration-thickness: 1px;
+}
+
+.post-content a:not(.anchor):hover {
+    text-decoration-color: currentColor;
+}
+
+.post-content a:focus-visible {
+    outline: 2px solid var(--article-accent);
+    outline-offset: 3px;
+}
+
+.post-content blockquote {
+    margin: 1.6rem 0;
+    padding: 1rem 1.25rem;
+    border-inline-start: 4px solid var(--article-quote-border);
+    border-radius: 0 10px 10px 0;
+    background: var(--article-quote);
+}
+
+.post-content blockquote > :last-child {
+    margin-bottom: 0;
+}
+
+/* Emphasized summary paragraphs become callouts without adding source markup. */
+.post-content > p:has(> strong:only-child) {
+    padding: 1rem 1.25rem;
+    border-inline-start: 4px solid var(--article-accent);
+    border-radius: 0 10px 10px 0;
+    background: var(--article-note);
+}
+
+.post-content :not(pre) > code {
+    padding: 0.15em 0.4em;
+    color: var(--article-accent);
+    background: var(--code-bg);
+    border-radius: 5px;
+    font-size: 0.86em;
+}
+
+.post-content .highlight,
+.post-content pre {
+    margin: 1.5rem 0;
+    border: 1px solid #3c435c;
+    border-radius: 12px;
+    background: var(--code-block-bg) !important;
+    overflow: hidden;
+}
+
+.post-content .highlight pre {
+    margin: 0;
+    border: 0;
+}
+
+.post-content pre code {
+    padding: 1.1rem 1.2rem;
+    color: #cad3f5;
+    font-family: ui-monospace, "Cascadia Code", "SFMono-Regular", Consolas, monospace;
+    font-size: 0.83em;
+    line-height: 1.75;
+    white-space: pre;
+    word-break: normal;
+    overflow-wrap: normal;
+}
+
+.post-content .highlight pre.chroma code {
+    padding: 1rem 0;
+}
+
+.post-content .chroma :is(.c, .c1, .cm, .cs, .ch, .cp, .cpf, .sd, .sh) {
+    color: #a5adc6;
+}
+
+.post-content :is(ul, ol) pre {
+    margin-inline-start: 0;
+}
+
+.post-content.md-content table:not(.lntable, .highlighttable) {
+    margin: 1.6rem 0;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    border-spacing: 0;
+    border-collapse: separate;
+    background: var(--article-surface);
+    font-size: 0.92em;
+}
+
+.post-content.md-content table:not(.lntable, .highlighttable) :is(th, td) {
+    padding: 0.7rem 0.85rem;
+    border: 0;
+    border-bottom: 1px solid var(--border);
+    line-height: 1.7;
+    word-break: normal;
+}
+
+.post-content.md-content table:not(.lntable, .highlighttable) th {
+    color: var(--article-heading);
+    background: var(--article-table-head);
+    font-weight: 600;
+}
+
+.post-content.md-content table:not(.lntable, .highlighttable) tbody tr:nth-child(even) {
+    background: var(--article-stripe);
+}
+
+.post-content.md-content table:not(.lntable, .highlighttable) tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.post-content img:not(.in-text) {
+    height: auto;
+    margin: 1.8rem auto;
+    border-radius: 10px;
+}
+
+.post-content p > a:has(> img:not(.in-text)) {
+    display: block;
+    margin: 1.8rem auto 0.65rem;
+}
+
+.post-content p > a > img:not(.in-text) {
+    margin: 0 auto;
+}
+
+.post-content figcaption,
+.post-content p > a:has(> img:not(.in-text)) + em,
+.post-content p > img:not(.in-text) + em,
+.post-content p:has(> img:not(.in-text), > a > img:not(.in-text)) + p:has(> em:only-child) {
+    display: block;
+    margin: 0.65rem 0 1.9rem;
+    color: var(--secondary);
+    font-size: 0.86em;
+    font-weight: 400;
+    line-height: 1.7;
+    text-align: center;
+}
+
+.post-content figcaption p {
+    margin: 0;
+    color: inherit;
+    font-size: inherit;
+}
+
+.post-content .katex-display {
+    padding: 0.35rem 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+@media screen and (max-width: 600px) {
+    .post-content {
+        font-size: 17px;
+        line-height: 1.85;
+    }
+
+    .post-content h2 {
+        font-size: 1.45rem;
+    }
+
+    .post-content h3 {
+        font-size: 1.2rem;
+    }
+
+    .post-content blockquote,
+    .post-content > p:has(> strong:only-child) {
+        padding: 0.85rem 1rem;
+    }
+
+    .post-content.md-content table:not(.lntable, .highlighttable) {
+        font-size: 0.88em;
+    }
+
+    .post-content.md-content table:not(.lntable, .highlighttable) :is(th, td) {
+        min-width: 9rem;
+    }
+
+    .post-content.md-content table:not(.lntable, .highlighttable) :is(th, td):first-child {
+        min-width: 5.5rem;
+    }
+
+    .post-content.md-content table:not(.lntable, .highlighttable) :is(th, td):last-child {
+        min-width: 16rem;
+    }
+}
