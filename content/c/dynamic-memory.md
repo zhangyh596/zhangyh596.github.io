@@ -3,7 +3,7 @@ title: "动态内存管理（C语言超详细）"
 date: "2025-12-18T14:53:40+08:00"
 draft: false
 categories: ["C"]
-tags: ["动态内存", "malloc", "free", "calloc", "realloc"]
+tags: ["动态内存"]
 ---
 ## 1.为什么要有动态内存管理
 

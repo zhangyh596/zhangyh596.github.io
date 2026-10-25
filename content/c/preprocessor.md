@@ -3,7 +3,7 @@ title: "C语言中预处理"
 date: "2026-02-15T15:57:22+08:00"
 draft: false
 categories: ["C"]
-tags: ["预处理", "宏", "define", "include"]
+tags: ["预处理"]
 ---
 ## 1.预定义符号
 

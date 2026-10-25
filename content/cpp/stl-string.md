@@ -3,7 +3,7 @@ title: "STL-string类的模拟实现"
 date: "2026-06-14T16:58:14+08:00"
 draft: false
 categories: ["C++"]
-tags: ["STL", "string", "模拟实现"]
+tags: ["STL", "字符与字符串"]
 ---
 ## 1.定义类的基本结构
 

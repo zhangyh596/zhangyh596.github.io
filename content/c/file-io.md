@@ -3,7 +3,7 @@ title: "文件操作（C语言超详细讲解）"
 date: "2025-12-22T17:14:57+08:00"
 draft: false
 categories: ["C"]
-tags: ["文件操作", "fopen", "fread", "fwrite", "fclose"]
+tags: ["文件操作"]
 ---
 ## 1.使用文件的原因
 

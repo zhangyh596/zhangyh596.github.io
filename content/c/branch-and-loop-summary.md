@@ -3,7 +3,7 @@ title: '分支和循环的总结（详细）'
 date: '2025-09-14T10:58:55+08:00'
 draft: false
 categories: ['C']
-tags: ['分支', '循环', 'switch', 'while', 'for', 'break', 'continue', 'goto']
+tags: ["分支", "循环"]
 ---
 总体概括
 

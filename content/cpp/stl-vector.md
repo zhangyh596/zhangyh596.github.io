@@ -3,7 +3,7 @@ title: "STL-vector的模拟实现"
 date: "2026-07-05T18:18:08+08:00"
 draft: false
 categories: ["C++"]
-tags: ["STL", "vector", "模拟实现"]
+tags: ["STL", "数组"]
 ---
 ## 1.定义vector的基本结构
 

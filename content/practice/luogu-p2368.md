@@ -3,7 +3,7 @@ title: "洛谷P2368 EXCEEDED WARNING B"
 date: "2026-02-18T17:27:44+08:00"
 draft: false
 categories: ["算法"]
-tags: ["洛谷", "P2368", "模拟"]
+tags: ["模拟"]
 ---
 题目简述：求有多少个平方后末尾为 987654321 的 n 位数。（n会告诉我们）
 

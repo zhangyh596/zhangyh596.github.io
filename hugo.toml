@@ -7,6 +7,13 @@ theme = 'PaperMod'
   description = 'AI Infra 与 C++ 方向的技术博客'
   math = true
 
+[params.fuseOpts]
+  keys = ['title', 'tags']
+  threshold = 0.0
+
+[outputs]
+  home = ['HTML', 'RSS', 'JSON']
+
 [markup.goldmark.extensions.passthrough]
 enable = true
 [markup.goldmark.extensions.passthrough.delimiters]
@@ -42,7 +49,7 @@ noClasses = false
     url = '/ai-infra/'
     weight = 6
   [[menu.main]]
-    name = '论文'
+    name = '论文心得'
     url = '/papers/'
     weight = 7
   [[menu.main]]
@@ -53,3 +60,8 @@ noClasses = false
     name = '标签'
     url = '/tags/'
     weight = 9
+  [[menu.main]]
+    identifier = 'search'
+    name = '搜索'
+    url = '/search/'
+    weight = 10

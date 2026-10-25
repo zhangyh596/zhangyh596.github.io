@@ -3,7 +3,7 @@ title: "结构体的使用（C语言超详细）"
 date: "2025-12-14T11:20:09+08:00"
 draft: false
 categories: ["C"]
-tags: ["结构体", "struct", "结构体指针"]
+tags: ["结构体"]
 ---
 ## 1.结构体类型的声明
 

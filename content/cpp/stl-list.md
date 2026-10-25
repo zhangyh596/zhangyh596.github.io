@@ -3,7 +3,7 @@ title: "STL-list类的模拟实现"
 date: "2026-08-09T23:03:14+08:00"
 draft: false
 categories: ["C++"]
-tags: ["STL", "list", "模拟实现"]
+tags: ["STL"]
 ---
 ## 1.定义节点的结构
 

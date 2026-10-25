@@ -4,7 +4,7 @@ date: "2026-10-21"
 draft: false
 description: "记录目前对 DSpark 半自回归草稿、置信度调度与系统落地的理解。"
 categories: ["论文阅读"]
-tags: ["DSpark", "投机解码", "LLM 推理", "AI Infra"]
+tags: ["LLM 推理", "投机解码"]
 ---
 
 > 这篇文章记录的是我对 DSpark 的初步理解。具体的研究和设计还在学习中，目前正在尝试给 gLLM 推理引擎集成 DSpark。先写下了目前能讲清楚的主线、阅读收获写下来，后续会结合代码与实验继续更新。

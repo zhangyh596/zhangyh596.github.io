@@ -3,7 +3,7 @@ title: "内存函数（C语言超详细）"
 date: "2025-11-29T22:33:45+08:00"
 draft: false
 categories: ["C"]
-tags: ["内存函数", "memcpy", "memmove", "memset", "memcmp"]
+tags: ["内存函数"]
 ---
 ## 1.memcpy的使用
 
