@@ -70,10 +70,7 @@ MyString::MyString() : _length(0), _capacity(0)
     _data = new char[1];
     _data[0] = '\0';
 }
-```
 
-
-```cpp
 // 2. 带参构造函数
 MyString::MyString(const char *str)
 {
@@ -207,10 +204,7 @@ size_t MyString::size() const
 {
     return _length;
 }
-```
 
-
-```cpp
 void MyString::set_char(size_t index, char ch)
 {
     if (index < _length)
@@ -218,10 +212,7 @@ void MyString::set_char(size_t index, char ch)
         _data[index] = ch;
     }
 }
-```
 
-
-```cpp
 void test2()
 {
     MyString s1("hello");
@@ -441,10 +432,7 @@ char &MyString::operator[](size_t index)
 {
     return _data[index];
 }
-```
 
-
-```cpp
 // 9. 下标操作符 (常量)
 const char &MyString::operator[](size_t index) const
 {

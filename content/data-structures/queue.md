@@ -32,11 +32,7 @@ typedef struct Node
     int data;//存放真正的数据 (乘客)
     struct Node* next;//指向下一节车厢的绳子 (钩子)
 }Node;
-```
 
-
-
-```c
 // 第 2 个结构体：队列管理器 (相当于“火车站长”)
 typedef struct Queue
 {

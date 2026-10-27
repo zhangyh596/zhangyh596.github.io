@@ -439,10 +439,7 @@ int binarySearchRight1(int* nums, int numsSize, int target)
 <!-- -->
 
 1.  **模板三（绝对安全）：while(left + 1 < right)**
-2.  **特点：无脑向下取整，无脑 left=mid 和
-```c
-right=mid，最后剩下两个元素，靠 if 顺序定乾坤。**
-```
+2.  **特点：无脑向下取整，无脑 left=mid 和 right=mid，最后剩下两个元素，靠 if 顺序定乾坤。**
 
 3.  **适用：面试实战的防翻车神器。当你脑子糊涂、面对极其复杂的边界条件时，直接掏出这套模板，写出来绝对一次过！**
 
