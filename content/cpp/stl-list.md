@@ -59,25 +59,16 @@ node）的结构。
         typedef __list_iterator<T> self;
         
         link_type _node; // 这里面藏着真正的节点指针
-```
 
-
-```cpp
         // 构造函数
         __list_iterator(link_type x = nullptr) : _node(x) {}
-```
 
-
-```cpp
         // 解引用操作符：当用户写 *it 时，应该暴露出真正的用户数据（注意返回引用，因为用户可能会修改它，例如 *it = 10;）
         T& operator*() const
         {
             return _node->_data;
         }
-```
 
-
-```cpp
         // 前置 ++ 操作符：当用户写 ++it 时，底层节点指针该怎么顺藤摸瓜？
         // 注意：前置++通常返回自身的引用（self&），这样才能支持 ++(++it) 这种连续操作
         self& operator++()
@@ -113,16 +104,10 @@ node）的结构。
         // 把我们刚才写的复杂迭代器，对外正式包装成公开的艺名 iterator
         typedef __list_iterator<T> iterator;
         typedef __list_node<T>* link_type;
-```
 
-
-```cpp
     private:
         link_type _head; // 这就是那个“假车头”（哨兵位节点指针）
-```
 
-
-```cpp
     public:
         // 构造函数：创造一辆空火车
         list()
@@ -152,16 +137,10 @@ node）的结构。
             // 制造一节新节点，把数据装进去
             link_type new_node = new __list_node<T>();
             new_node->_data = x;
-```
 
-
-```cpp
             // 顺藤摸瓜，找到当前链表的尾节点
             link_type tail = _head->_prev;
-```
 
-
-```cpp
             // 开始调整4根指针的指向
             new_node->_next = _head;
             new_node->_prev = tail;
@@ -191,19 +170,13 @@ node）的结构。
         {
             return _node != __x._node;
         }
-```
 
-
-```cpp
         // 返回指向第一个真实货物的迭代器
         iterator begin()
         {
             return iterator(_head->_next);
         }
-```
 
-
-```cpp
         // 返回指向终点（哨兵节点）的迭代器
         iterator end()
         {
@@ -218,36 +191,21 @@ node）的结构。
 void test1()
 {
     zyh::list<int> ls;
-```
 
-
-```cpp
     ls.push_back(1);
     ls.push_back(2);
     ls.push_back(3);
-```
 
-
-```cpp
     zyh::list<int>::iterator it = ls.begin();
-```
 
-
-```cpp
     cout << "zyh::list里面的数据是：";
-```
 
-
-```cpp
     while (it != ls.end())
     {
         cout << *it << " ";
         ++it;
     }
-```
 
-
-```cpp
     cout << endl;
 }
 ```
@@ -282,33 +240,18 @@ void test1()
         iterator insert(iterator pos, const T &x)
         {
             link_type curr = pos._node;
-```
 
-
-```cpp
             link_type prev = curr->_prev;
-```
 
-
-```cpp
             link_type new_node = new __list_node<T>();
             new_node->_data = x;
-```
 
-
-```cpp
             new_node->_next = curr;
             new_node->_prev = prev;
-```
 
-
-```cpp
             prev->_next = new_node;
             curr->_prev = new_node;
-```
 
-
-```cpp
             // 回指向新节点的迭代器
             return iterator(new_node);
         }
@@ -323,10 +266,7 @@ void test1()
         {
             insert(end(), x);
         }
-```
 
-
-```cpp
         // 头插：在第一节真实车厢（begin()）前面插一个车厢
         void push_front(const T& x)
         {
@@ -355,27 +295,15 @@ void test1()
         iterator erase(iterator pos)
         {
             link_type curr = pos._node;
-```
 
-
-```cpp
             link_type prev = curr->_prev;
             link_type next = curr->_next;
-```
 
-
-```cpp
             prev->_next = next;
             next->_prev = prev;
-```
 
-
-```cpp
             delete curr;
-```
 
-
-```cpp
             return iterator(next);
         }
 ```
@@ -396,35 +324,23 @@ void print_list(zyh::list<int> &l)
     }
     cout << endl;
 }
-```
 
-
-```cpp
 void test2()
 {
     zyh::list<int> ls;
-```
 
-
-```cpp
     // 2. 测试尾插 (push_back)
     cout << "\n[测试 1] 尾部插入 10, 20, 30:" << endl;
     ls.push_back(10);
     ls.push_back(20);
     ls.push_back(30);
     print_list(ls);
-```
 
-
-```cpp
     // 3. 测试头插 (push_front)
     cout << "\n[测试 2] 头部插入 5:" << endl;
     ls.push_front(5);
     print_list(ls);
-```
 
-
-```cpp
     // 4. 测试任意位置插入 (insert)
     cout << "\n[测试 3] 在 20 前面插入 15:" << endl;
     zyh::list<int>::iterator it = ls.begin();
@@ -432,20 +348,14 @@ void test2()
     ++it; // 此时它指向 20
     ls.insert(it, 15);
     print_list(ls);
-```
 
-
-```cpp
     // 5. 测试任意位置删除 (erase)
     cout << "\n[测试 4] 删除 10 这个元素:" << endl;
     zyh::list<int>::iterator erase_it = ls.begin();
     ++erase_it; // 让遥控器指向 10
     ls.erase(erase_it);
     print_list(ls);
-```
 
-
-```cpp
     cout << "\n================ 测试圆满结束 ================\n";
 }
 ```
@@ -455,15 +365,11 @@ void test2()
 
 为了解决这个问题，我们需要写两个极其重要的清理函数：
 
-1.  **`clear()`
-```cpp
-函数**：清空火车里的所有货物（销毁所有真实车厢），但**保留假车头**，让火车回到刚出生时的“空车状态”。
-```
+1.  **`clear()`函数**：清空火车里的所有货物（销毁所有真实车厢），但**保留假车头**，让火车回到刚出生时的“空车状态”。
 
-2.  **`~list()`
-```cpp
-析构函数**：火车彻底报废，**连假车头一起砸掉**，一寸内存都不留。
-```
+
+2.  **`~list()`析构函数**：火车彻底报废，**连假车头一起砸掉**，一寸内存都不留。
+
 
 
 <!-- -->
@@ -473,28 +379,19 @@ void test2()
         void clear()
         {
             iterator it = begin();
-```
 
-
-```cpp
             while (it != end())
             {
                 // erase 会把当前车厢砸掉，并把下一个车厢的遥控器交给我们，我们直接接住！
                 it = erase(it);
             }
         }
-```
 
-
-```cpp
         // 析构函数：火车寿命终结，彻底销毁
         ~list()
         {
             clear();
-```
 
-
-```cpp
             delete _head;
             _head = nullptr;
         }
@@ -535,10 +432,7 @@ zyh::list<int> list_B = list_A;**
             _head = new __list_node<T>();
             _head->_next = _head;
             _head->_prev = _head;
-```
 
-
-```cpp
             // 拿出迭代器，从头到尾遍历另一个链表
             iterator it = other.begin();
             while (it != other.end())
@@ -583,10 +477,7 @@ zyh::list<int> list_B;
         list<T> &operator=(list<T> other) // 这里没有用 &，故意用“值传递”！
         {
             swap(other);
-```
 
-
-```cpp
             return *this;
         }
 ```
@@ -632,67 +523,43 @@ void print_list(zyh::list<int> &l, const string &name)
     }
     cout << endl;
 }
-```
 
-
-```cpp
 void test3()
 {
     cout << "========== 开启深拷贝与赋值测试 ==========\n";
-```
 
-
-```cpp
     // 1. 造一列 A 号链表
     zyh::list<int> list_A;
     list_A.push_back(10);
     list_A.push_back(20);
     list_A.push_back(30);
     print_list(list_A, "list_A");
-```
 
-
-```cpp
     // 2. 测试拷贝构造：照着 A 造一列 B
     cout << "\n[测试 1] 拷贝构造测试 (list_B 照着 list_A 抄):" << endl;
     zyh::list<int> list_B(list_A); // 触发拷贝构造
     print_list(list_B, "list_B");
-```
 
-
-```cpp
     // 验证深拷贝：修改 B 会不会影响 A？
     cout << "\n[验证深拷贝] 往 list_B 尾部加 99，往 list_A 头部加 88:" << endl;
     list_B.push_back(99);
     list_A.push_front(88);
     print_list(list_A, "list_A (预期只有88在头)");
     print_list(list_B, "list_B (预期只有99在尾)");
-```
 
-
-```cpp
     // 3. 测试赋值运算符重载
     cout << "\n[测试 2] 赋值运算符测试 (造一个自带垃圾数据的 list_C):" << endl;
     zyh::list<int> list_C;
     list_C.push_back(666);
     list_C.push_back(777);
     print_list(list_C, "list_C (赋值前)");
-```
 
-
-```cpp
     cout << "\n[执行覆盖] list_C = list_A;" << endl;
     list_C = list_A; // 触发 Copy-and-Swap 黑魔法！
     print_list(list_C, "list_C (赋值后)");
-```
 
-
-```cpp
     cout << "\n================ 测试圆满结束 ================\n";
-```
 
-
-```cpp
     // 当 return 0 执行时：
     // list_C、list_B、list_A 会依次调用我们写的 ~zyh::list() 析构函数。
     // 如果没有引发 Segmentation Fault (段错误)，说明我们的深拷贝大获全胜！
@@ -796,38 +663,23 @@ C++ 规定：你手写的 `operator->`
     {
         typedef __list_node<T> *link_type;
         typedef __list_iterator<T, Ref, Ptr> self;
-```
 
-
-```cpp
         link_type _node; // 迭代器的芯片，指向节点
-```
 
-
-```cpp
         __list_iterator() : _node(nullptr)
         {
         }
-```
 
-
-```cpp
         __list_iterator(link_type x) : _node(x)
         {
         }
-```
 
-
-```cpp
         // 普通迭代器的解引用：返回货物的引用
         Ref operator*()
         {
             return _node->_data;
         }
-```
 
-
-```cpp
         // 重载箭头操作符
         Ptr operator->()
         {
@@ -837,30 +689,21 @@ C++ 规定：你手写的 `operator->`
         // 手写的 operator-> 函数，必须返回一个“原生的指针（内存地址）”
         // 然后，编译器会自动、强行、在后面再补上一个箭头
         // !!! 写下it->age相当于(it.operator->())->age
-```
 
-
-```cpp
         // 前置 ++ 操作符：返回迭代器自己的引用
         self &operator++()
         {
             _node = _node->_next;
             return *this;
         }
-```
 
-
-```cpp
         // 前置 -- 操作符
         self &operator--()
         {
             _node = _node->_prev;
             return *this;
         }
-```
 
-
-```cpp
         // 后置 ++ 操作符
         self operator++(int)
         {
@@ -868,10 +711,7 @@ C++ 规定：你手写的 `operator->`
             _node = _node->_next;
             return tmp;
         }
-```
 
-
-```cpp
         // 后置 -- 操作符
         self operator--(int)
         {
@@ -879,10 +719,7 @@ C++ 规定：你手写的 `operator->`
             _node = _node->_prev;
             return tmp;
         }
-```
 
-
-```cpp
         // 判断两个迭代器是否指向的节点不一样
         bool operator!=(const self &__x) const
         {
@@ -908,21 +745,12 @@ C++ 规定：你手写的 `operator->`
         // 核心魔法：利用不同的模板参数，瞬间裂变出两种遥控器！
         typedef __list_iterator<T, T&, T*>             iterator;
         typedef __list_iterator<T, const T&, const T*> const_iterator;
-```
 
-
-```cpp
         typedef __list_node<T>* link_type;
-```
 
-
-```cpp
     private:
         link_type _head; 
-```
 
-
-```cpp
     public:
         // ===== 原来的代码保持不变 =====
         list() { /* ... */ }
@@ -935,19 +763,13 @@ C++ 规定：你手写的 `operator->`
         iterator insert(iterator pos, const T& x) { /* ... */ }
         iterator erase(iterator pos) { /* ... */ }
         void clear() { /* ... */ }
-```
 
-
-```cpp
         // ===== 迭代器核心接口 =====
         
         // 1. 普通版本：给普通的 list 用
         iterator begin() { return _head->_next; }
         iterator end()   { return _head; }
-```
 
-
-```cpp
         // 2. 只读版本：专门给 const list 用，返回 const_iterator
         const_iterator begin() const { return _head->_next; }
         const_iterator end() const   { return _head; }
@@ -972,27 +794,18 @@ struct Student
 {
     string _name;
     int _age;
-```
 
-
-```cpp
     // 构造函数，方便我们初始化装货
     Student(string name = "", int age = 0) : _name(name), _age(age)
     {
     }
 };
-```
 
-
-```cpp
 // 专门用来测试我们的 const_iterator
 void print_const_list(const zyh::list<Student> &l)
 {
     cout << "[常量函数内部] 正在使用 const_iterator 打印:\n";
-```
 
-
-```cpp
     // 必须用 const_iterator，否则编译器会直接报错！
     zyh::list<Student>::const_iterator it = l.begin();
     while (it != l.end())
@@ -1000,39 +813,24 @@ void print_const_list(const zyh::list<Student> &l)
         // 🔥 见证奇迹的时刻！直接用 -> 访问结构体零件
         // 底层偷偷执行了: ( it.operator->() )->_name
         cout << "学生姓名: " << it->_name << ", 年龄: " << it->_age << endl;
-```
 
-
-```cpp
         // 🧪 恶作剧测试：如果解开下面这行的注释，编译器会立刻拦截，证明 const 锁生效了！
         // it->_age = 100;
-```
 
-
-```cpp
         ++it;
     }
 }
-```
 
-
-```cpp
 void test4()
 {
     cout << "========== 开启 zyh::list 终极测试 ==========\n\n";
-```
 
-
-```cpp
     // 第一步：造一列普通火车，装入 3 个学生实体
     zyh::list<Student> school_bus;
     school_bus.push_back(Student("张三", 18));
     school_bus.push_back(Student("李四", 19));
     school_bus.push_back(Student("王五", 20));
-```
 
-
-```cpp
     // 第二步：使用普通迭代器（可读可改）
     cout << "[测试 1] 使用普通迭代器遍历，并将李四的年龄改成 99:\n";
     zyh::list<Student>::iterator it = school_bus.begin();
@@ -1046,17 +844,11 @@ void test4()
         ++it;
     }
     cout << "\n--------------------------------------------------\n\n";
-```
 
-
-```cpp
     // 第三步：把火车送进只读打印函数（触发 const 机制）
     // 此时 school_bus 会被以 const& 的身份传进去
     print_const_list(school_bus);
-```
 
-
-```cpp
     cout << "\n========== 所有核心工程全部完美通过！ ==========\n";
 }
 ```
@@ -1077,19 +869,13 @@ void test4()
         {
             return _head->_next == _head;
         }
-```
 
-
-```cpp
         // 头删
         void pop_front()
         {
             erase(begin());
         }
-```
 
-
-```cpp
         // 尾删
         void pop_back()
         {
@@ -1124,41 +910,26 @@ void test4()
 void test5()
 {
     cout << "========== 开启 zyh::list 最终测试 ==========\n\n";
-```
 
-
-```cpp
     zyh::list<int> my_list;
-```
 
-
-```cpp
     // ---------------------------------------------------------
     // 测试 1：仪表盘测试 (empty 和 size)
     // ---------------------------------------------------------
     cout << "[测试 1]\n";
     cout << "是否为空? " << (my_list.empty() ? "是 (Empty)" : "否") << "\n";
     cout << "当前数量: " << my_list.size() << "\n\n";
-```
 
-
-```cpp
     // 装入 4 节车厢
     my_list.push_back(10);
     my_list.push_back(20);
     my_list.push_back(30);
     my_list.push_back(40);
-```
 
-
-```cpp
     cout << "[测试 2]\n";
     cout << "是否为空? " << (my_list.empty() ? "是" : "否 (Not Empty)") << "\n";
     cout << "当前数量: " << my_list.size() << "\n\n";
-```
 
-
-```cpp
     // ---------------------------------------------------------
     // 测试 3：遍历测试 (包含后置 ++ 和 前置后置 --)
     // ---------------------------------------------------------
@@ -1170,17 +941,11 @@ void test5()
         it++; // 专门测试你的后置 ++
     }
     cout << "\n\n";
-```
 
-
-```cpp
     cout << "[测试 4] 使用倒车档逆向遍历 (从尾开到头):\n";
     zyh::list<int>::iterator rit = my_list.end();
     rit--; // 先测试后置 --，把迭代器从哨兵节点退到真实的最后一节车厢 (40)
-```
 
-
-```cpp
     // 得益于我们的双向循环结构，一直倒车直到再次撞到哨兵节点(end)为止
     while (rit != my_list.end())
     {
@@ -1188,40 +953,25 @@ void test5()
         --rit; // 专门测试你的前置 --
     }
     cout << "\n\n";
-```
 
-
-```cpp
     // ---------------------------------------------------------
     // 测试 5：弹射器测试 (pop_front 和 pop_back)
     // ---------------------------------------------------------
     cout << "[测试 5] 启动弹射器:\n";
-```
 
-
-```cpp
     my_list.pop_front(); // 干掉车头 (10)
     cout << "执行 pop_front() 后，头部被删，剩余大小: " << my_list.size() << "\n";
-```
 
-
-```cpp
     my_list.pop_back(); // 干掉车尾 (40)
     cout << "执行 pop_back() 后，尾部被删，剩余大小: " << my_list.size() << "\n";
-```
 
-
-```cpp
     cout << "现在的剩余车厢是: ";
     for (zyh::list<int>::iterator cur = my_list.begin(); cur != my_list.end(); ++cur)
     {
         cout << *cur << " "; // 应该只剩下 20 和 30
     }
     cout << "\n\n";
-```
 
-
-```cpp
     cout << "========== 恭喜！所有测试完美通过！ ==========\n";
 }
 ```
@@ -1234,17 +984,11 @@ MyList.h
 ```cpp
 #ifndef MY_STL_LIST_HPP
 #define MY_STL_LIST_HPP
-```
 
-
-```cpp
 #include <cstddef>
 #include <utility>
 #include <cassert>
-```
 
-
-```cpp
 namespace zyh
 {
     template <typename T>
@@ -1254,57 +998,36 @@ namespace zyh
         __list_node<T> *_prev;
         T _data;
     };
-```
 
-
-```cpp
     // 终极形态迭代器
     template <typename T, typename Ref, typename Ptr>
     struct __list_iterator
     {
         typedef __list_node<T> *link_type;
         typedef __list_iterator<T, Ref, Ptr> self;
-```
 
-
-```cpp
         link_type _node; // 迭代器的芯片，指向节点
-```
 
-
-```cpp
         __list_iterator() : _node(nullptr)
         {
         }
-```
 
-
-```cpp
         __list_iterator(link_type x) : _node(x)
         {
         }
-```
 
-
-```cpp
         // 支持用普通 iterator 隐式构造 const_iterator
         __list_iterator(const __list_iterator<T, T &, T *> &it)
             : _node(it._node)
         {
         }
-```
 
-
-```cpp
         // 普通迭代器的解引用：返回货物的引用
         Ref operator*() const
         {
             return _node->_data;
         }
-```
 
-
-```cpp
         // 重载箭头操作符
         // 当比如_data是一个自定义的结构体(例如Student)
         // 手写的 operator-> 函数，必须返回一个“原生的指针（内存地址）”
@@ -1314,30 +1037,21 @@ namespace zyh
         {
             return &(_node->_data);
         }
-```
 
-
-```cpp
         // 前置 ++ 操作符：返回迭代器自己的引用
         self &operator++()
         {
             _node = _node->_next;
             return *this;
         }
-```
 
-
-```cpp
         // 前置 -- 操作符
         self &operator--()
         {
             _node = _node->_prev;
             return *this;
         }
-```
 
-
-```cpp
         // 后置 ++ 操作符
         self operator++(int)
         {
@@ -1345,10 +1059,7 @@ namespace zyh
             _node = _node->_next;
             return tmp;
         }
-```
 
-
-```cpp
         // 后置 -- 操作符
         self operator--(int)
         {
@@ -1356,78 +1067,51 @@ namespace zyh
             _node = _node->_prev;
             return tmp;
         }
-```
 
-
-```cpp
         // 判断两个迭代器是否指向的节点不一样
         bool operator!=(const self &__x) const
         {
             return _node != __x._node;
         }
-```
 
-
-```cpp
         // 判断两个迭代器是否指向的节点一样
         bool operator==(const self &__x) const
         {
             return _node == __x._node;
         }
     };
-```
 
-
-```cpp
     template <typename T>
     class list
     {
     public:
         typedef __list_iterator<T, T &, T *> iterator;
         typedef __list_iterator<T, const T &, const T *> const_iterator;
-```
 
-
-```cpp
         typedef __list_node<T> *link_type;
-```
 
-
-```cpp
     private:
         link_type _head; // 哨兵节点
         size_t _size;
-```
 
-
-```cpp
     public:
         // 构造函数
         list()
         {
             _size = 0;
             _head = new __list_node<T>();
-```
 
-
-```cpp
             _head->_next = _head;
             _head->_prev = _head;
         }
-```
 
-
-```cpp
         // 拷贝构造函数
         list(const list<T> &other) : _size(0)
         {
             _head = new __list_node<T>();
             _head->_next = _head;
             _head->_prev = _head;
-```
 
-
-```cpp
             // 拿出迭代器，从头到尾遍历另一个链表
             const_iterator it = other.begin();
             while (it != other.end())
@@ -1436,278 +1120,164 @@ namespace zyh
                 ++it;
             }
         }
-```
 
-
-```cpp
         void swap(list<T> &other)
         {
             std::swap(_head, other._head);
             std::swap(_size, other._size);
         }
-```
 
-
-```cpp
         // 赋值运算符重载（现代写法：Copy-and-Swap（拷贝并交换））
         list<T> &operator=(list<T> other) // 这里没有用 &，故意用“值传递”！
         {
             swap(other);
-```
 
-
-```cpp
             return *this;
         }
-```
 
-
-```cpp
         // // 尾插函数
         // void push_back(const T &x)
         // {
         //     link_type new_node = new __list_node<T>();
         //     new_node->_data = x;
-```
 
-
-```cpp
         //     link_type tail = _head->_prev;
-```
 
-
-```cpp
         //     new_node->_next = _head;
         //     new_node->_prev = tail;
-```
 
-
-```cpp
         //     tail->_next = new_node;
         //     _head->_prev = new_node;
         // }
-```
 
-
-```cpp
         // 返回指向第一个真实货物的迭代器
         iterator begin()
         {
             return iterator(_head->_next);
         }
-```
 
-
-```cpp
         // 只读版本
         const_iterator begin() const
         {
             return _head->_next;
         }
-```
 
-
-```cpp
         // 返回指向终点（哨兵节点）的迭代器
         iterator end()
         {
             return iterator(_head);
         }
-```
 
-
-```cpp
         // 只读版本
         const_iterator end() const
         {
             return _head;
         }
-```
 
-
-```cpp
         // 在指定的位置前面插入一个节点
         iterator insert(const_iterator pos, const T &x)
         {
             link_type curr = pos._node;
-```
 
-
-```cpp
             link_type prev = curr->_prev;
-```
 
-
-```cpp
             link_type new_node = new __list_node<T>();
             new_node->_data = x;
-```
 
-
-```cpp
             new_node->_next = curr;
             new_node->_prev = prev;
-```
 
-
-```cpp
             prev->_next = new_node;
             curr->_prev = new_node;
-```
 
-
-```cpp
             ++_size;
-```
 
-
-```cpp
             // 回指向新节点的迭代器
             return iterator(new_node);
         }
-```
 
-
-```cpp
         // 更改之前的尾插函数，复用insert函数
         void push_back(const T &x)
         {
             insert(end(), x);
         }
-```
 
-
-```cpp
         // 头插函数，复用insert
         void push_front(const T &x)
         {
             insert(begin(), x);
         }
-```
 
-
-```cpp
         // 任意位置删除，并返回下一个节点的迭代器
         iterator erase(const_iterator pos)
         {
             assert(!empty());
-```
 
-
-```cpp
             link_type curr = pos._node;
-```
 
-
-```cpp
             link_type prev = curr->_prev;
             link_type next = curr->_next;
-```
 
-
-```cpp
             prev->_next = next;
             next->_prev = prev;
-```
 
-
-```cpp
             delete curr;
-```
 
-
-```cpp
             --_size;
-```
 
-
-```cpp
             return iterator(next);
         }
-```
 
-
-```cpp
         // 清空所有真实节点（保留哨兵节点）
         void clear()
         {
             iterator it = begin();
-```
 
-
-```cpp
             while (it != end())
             {
                 // erase 会把当前车厢砸掉，并把下一个车厢的遥控器交给我们，我们直接接住！
                 it = erase(it);
             }
         }
-```
 
-
-```cpp
         // 辅助函数：判断链表是否为空
         bool empty() const
         {
             return _head->_next == _head;
         }
-```
 
-
-```cpp
         // 头删
         void pop_front()
         {
             assert(!empty());
-```
 
-
-```cpp
             erase(begin());
         }
-```
 
-
-```cpp
         // 尾删
         void pop_back()
         {
             assert(!empty());
-```
 
-
-```cpp
             // 要删最后一个，就是 end() 的前一个
             erase(--end());
         }
-```
 
-
-```cpp
         size_t size() const
         {
             return _size;
         }
-```
 
-
-```cpp
         ~list()
         {
             clear();
-```
 
-
-```cpp
             delete _head;
             _head = nullptr;
         }
     };
 }
-```
 
-
-```cpp
 #endif // MY_STL_LIST_HPP
 ```
 
@@ -1718,49 +1288,28 @@ main.cpp
 #include <iostream>
 #include "MyList.h"
 using namespace std;
-```
 
-
-```cpp
 void test1()
 {
     zyh::list<int> ls;
-```
 
-
-```cpp
     ls.push_back(1);
     ls.push_back(2);
     ls.push_back(3);
-```
 
-
-```cpp
     zyh::list<int>::iterator it = ls.begin();
-```
 
-
-```cpp
     cout << "zyh::list里面的数据是：";
-```
 
-
-```cpp
     while (it != ls.end())
     {
         cout << *it << " ";
         ++it;
     }
-```
 
-
-```cpp
     cout << endl;
 }
-```
 
-
-```cpp
 // // 封装一个打印函数，专门用来测试我们的迭代器
 // void print_list(zyh::list<int> &l)
 // {
@@ -1773,35 +1322,23 @@ void test1()
 //     }
 //     cout << endl;
 // }
-```
 
-
-```cpp
 // void test2()
 // {
 //     zyh::list<int> ls;
-```
 
-
-```cpp
 //     // 2. 测试尾插 (push_back)
 //     cout << "\n[测试 1] 尾部插入 10, 20, 30:" << endl;
 //     ls.push_back(10);
 //     ls.push_back(20);
 //     ls.push_back(30);
 //     print_list(ls);
-```
 
-
-```cpp
 //     // 3. 测试头插 (push_front)
 //     cout << "\n[测试 2] 头部插入 5:" << endl;
 //     ls.push_front(5);
 //     print_list(ls);
-```
 
-
-```cpp
 //     // 4. 测试任意位置插入 (insert)
 //     cout << "\n[测试 3] 在 20 前面插入 15:" << endl;
 //     zyh::list<int>::iterator it = ls.begin();
@@ -1809,26 +1346,17 @@ void test1()
 //     ++it; // 此时它指向 20
 //     ls.insert(it, 15);
 //     print_list(ls);
-```
 
-
-```cpp
 //     // 5. 测试任意位置删除 (erase)
 //     cout << "\n[测试 4] 删除 10 这个元素:" << endl;
 //     zyh::list<int>::iterator erase_it = ls.begin();
 //     ++erase_it; // 让遥控器指向 10
 //     ls.erase(erase_it);
 //     print_list(ls);
-```
 
-
-```cpp
 //     cout << "\n================ 测试圆满结束 ================\n";
 // }
-```
 
-
-```cpp
 // 稍微升级一下打印函数，带上链表的名字方便区分
 void print_list(zyh::list<int> &l, const string &name)
 {
@@ -1841,101 +1369,65 @@ void print_list(zyh::list<int> &l, const string &name)
     }
     cout << endl;
 }
-```
 
-
-```cpp
 void test3()
 {
     cout << "========== 开启深拷贝与赋值测试 ==========\n";
-```
 
-
-```cpp
     // 1. 造一列 A 号链表
     zyh::list<int> list_A;
     list_A.push_back(10);
     list_A.push_back(20);
     list_A.push_back(30);
     print_list(list_A, "list_A");
-```
 
-
-```cpp
     // 2. 测试拷贝构造：照着 A 造一列 B
     cout << "\n[测试 1] 拷贝构造测试 (list_B 照着 list_A 抄):" << endl;
     zyh::list<int> list_B(list_A); // 触发拷贝构造
     print_list(list_B, "list_B");
-```
 
-
-```cpp
     // 验证深拷贝：修改 B 会不会影响 A？
     cout << "\n[验证深拷贝] 往 list_B 尾部加 99，往 list_A 头部加 88:" << endl;
     list_B.push_back(99);
     list_A.push_front(88);
     print_list(list_A, "list_A (预期只有88在头)");
     print_list(list_B, "list_B (预期只有99在尾)");
-```
 
-
-```cpp
     // 3. 测试赋值运算符重载
     cout << "\n[测试 2] 赋值运算符测试 (造一个自带垃圾数据的 list_C):" << endl;
     zyh::list<int> list_C;
     list_C.push_back(666);
     list_C.push_back(777);
     print_list(list_C, "list_C (赋值前)");
-```
 
-
-```cpp
     cout << "\n[执行覆盖] list_C = list_A;" << endl;
     list_C = list_A; // 触发 Copy-and-Swap 黑魔法！
     print_list(list_C, "list_C (赋值后)");
-```
 
-
-```cpp
     cout << "\n================ 测试圆满结束 ================\n";
-```
 
-
-```cpp
     // 当 return 0 执行时：
     // list_C、list_B、list_A 会依次调用我们写的 ~zyh::list() 析构函数。
     // 如果没有引发 Segmentation Fault (段错误)，说明我们的深拷贝大获全胜！
 }
-```
 
-
-```cpp
 // 造一个结构体，用来专门测试 -> 操作符
 struct Student
 {
     string _name;
     int _age;
-```
 
-
-```cpp
     // 构造函数，方便我们初始化装货
     Student(string name = "", int age = 0) : _name(name), _age(age)
     {
     }
 };
-```
 
-
-```cpp
 // 专门用来测试我们的 const_iterator
 void print_const_list(const zyh::list<Student> &l)
 {
     cout << "[常量函数内部] 正在使用 const_iterator 打印:\n";
-```
 
-
-```cpp
     // 必须用 const_iterator，否则编译器会直接报错！
     zyh::list<Student>::const_iterator it = l.begin();
     while (it != l.end())
@@ -1943,39 +1435,24 @@ void print_const_list(const zyh::list<Student> &l)
         // 见证奇迹的时刻！直接用 -> 访问结构体零件
         // 底层偷偷执行了: ( it.operator->() )->_name
         cout << "学生姓名: " << it->_name << ", 年龄: " << it->_age << endl;
-```
 
-
-```cpp
         // 恶作剧测试：如果解开下面这行的注释，编译器会立刻拦截，证明 const 锁生效了！
         // it->_age = 100;
-```
 
-
-```cpp
         ++it;
     }
 }
-```
 
-
-```cpp
 void test4()
 {
     cout << "========== 开启 zyh::list 终极测试 ==========\n\n";
-```
 
-
-```cpp
     // 第一步：造一列普通火车，装入 3 个学生实体
     zyh::list<Student> school_bus;
     school_bus.push_back(Student("张三", 18));
     school_bus.push_back(Student("李四", 19));
     school_bus.push_back(Student("王五", 20));
-```
 
-
-```cpp
     // 第二步：使用普通迭代器（可读可改）
     cout << "[测试 1] 使用普通迭代器遍历，并将李四的年龄改成 99:\n";
     zyh::list<Student>::iterator it = school_bus.begin();
@@ -1989,61 +1466,37 @@ void test4()
         ++it;
     }
     cout << "\n--------------------------------------------------\n\n";
-```
 
-
-```cpp
     // 第三步：把火车送进只读打印函数（触发 const 机制）
     // 此时 school_bus 会被以 const& 的身份传进去
     print_const_list(school_bus);
-```
 
-
-```cpp
     cout << "\n========== 所有核心工程全部完美通过！ ==========\n";
 }
-```
 
-
-```cpp
 void test5()
 {
     cout << "========== 开启 zyh::list 最终测试 ==========\n\n";
-```
 
-
-```cpp
     zyh::list<int> my_list;
-```
 
-
-```cpp
     // ---------------------------------------------------------
     // 测试 1：仪表盘测试 (empty 和 size)
     // ---------------------------------------------------------
     cout << "[测试 1]\n";
     cout << "是否为空? " << (my_list.empty() ? "是 (Empty)" : "否") << "\n";
     cout << "当前数量: " << my_list.size() << "\n\n";
-```
 
-
-```cpp
     // 装入 4 节车厢
     my_list.push_back(10);
     my_list.push_back(20);
     my_list.push_back(30);
     my_list.push_back(40);
-```
 
-
-```cpp
     cout << "[测试 2]\n";
     cout << "是否为空? " << (my_list.empty() ? "是" : "否 (Not Empty)") << "\n";
     cout << "当前数量: " << my_list.size() << "\n\n";
-```
 
-
-```cpp
     // ---------------------------------------------------------
     // 测试 3：遍历测试 (包含后置 ++ 和 前置后置 --)
     // ---------------------------------------------------------
@@ -2055,17 +1508,11 @@ void test5()
         it++; // 专门测试你的后置 ++
     }
     cout << "\n\n";
-```
 
-
-```cpp
     cout << "[测试 4] 使用倒车档逆向遍历 (从尾开到头):\n";
     zyh::list<int>::iterator rit = my_list.end();
     rit--; // 先测试后置 --，把迭代器从哨兵节点退到真实的最后一节车厢 (40)
-```
 
-
-```cpp
     // 得益于我们的双向循环结构，一直倒车直到再次撞到哨兵节点(end)为止
     while (rit != my_list.end())
     {
@@ -2073,46 +1520,28 @@ void test5()
         --rit; // 专门测试你的前置 --
     }
     cout << "\n\n";
-```
 
-
-```cpp
     // ---------------------------------------------------------
     // 测试 5：弹射器测试 (pop_front 和 pop_back)
     // ---------------------------------------------------------
     cout << "[测试 5] 启动弹射器:\n";
-```
 
-
-```cpp
     my_list.pop_front(); // 干掉车头 (10)
     cout << "执行 pop_front() 后，头部被删，剩余大小: " << my_list.size() << "\n";
-```
 
-
-```cpp
     my_list.pop_back(); // 干掉车尾 (40)
     cout << "执行 pop_back() 后，尾部被删，剩余大小: " << my_list.size() << "\n";
-```
 
-
-```cpp
     cout << "现在的剩余车厢是: ";
     for (zyh::list<int>::iterator cur = my_list.begin(); cur != my_list.end(); ++cur)
     {
         cout << *cur << " "; // 应该只剩下 20 和 30
     }
     cout << "\n\n";
-```
 
-
-```cpp
     cout << "========== 恭喜！所有测试完美通过！ ==========\n";
 }
-```
 
-
-```cpp
 int main()
 {
     // test1();

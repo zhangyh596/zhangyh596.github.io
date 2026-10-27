@@ -21,41 +21,26 @@ private:
     char *_data;
     size_t _length;
     size_t _capacity;
-```
 
-
-```cpp
 public:
     // 构造与析构
     MyString();
     MyString(const char *str);
     ~MyString();
-```
 
-
-```cpp
     // 拷贝构造与移动构造
     MyString(const MyString &other);
     MyString(MyString &&other) noexcept;
-```
 
-
-```cpp
     // 赋值运算符
     MyString &operator=(const MyString &other);
     MyString &operator=(MyString &&other) noexcept;
-```
 
-
-```cpp
     // 常用功能
     const char *c_str() const;
     size_t size() const;
     void set_char(size_t index, char ch);
-```
 
-
-```cpp
     // 运算符重载 (成员函数)
     char &operator[](size_t index);
     const char &operator[](size_t index) const;
@@ -68,17 +53,12 @@ public:
 
 分成无参构造函数和带参构造函数（也可以直接写成带默认值的构造函数）
 
-1.  **无参构造函数**：创建一个空字符串（比如 `MyString s1;`）。         
-```cpp
-                                       关键点来了！`new` 是 C++
+1.  **无参构造函数**：创建一个空字符串（比如 `MyString s1;`）。关键点来了！`new` 是 C++
 里的“圈地”命令。它会向操作系统申请一块内存。虽然是空字符串，但我们在底层也要申请
 1 个字节的空间，用来放 `'\0'`。
-```
 
-2.  **带参构造函数**：用一个 C 语言风格的字符串来初始化（比如
-```cpp
-`MyString s2("Hello");`）。
-```
+2.  **带参构造函数**：用一个 C 语言风格的字符串来初始化（比如`MyString s2("Hello");`）。
+
 
 
 <!-- -->
@@ -147,16 +127,11 @@ const char *MyString::c_str() const
 ### 辅助函数：`const char* c_str() const`
 
 1.  **干嘛用的**：现在的 `MyString` 是个自定义类，`std::cout`
-```cpp
 还不认识它，直接打印会报错。这个函数把内部的底层指针
 \_`data` 借给外面用一下，方便配合 `std::cout` 打印。
-```
 
-2.  **后面的 `const`
-```cpp
-是干嘛的**：这叫“常成员函数”。意思是承诺在这个函数内部，绝对不会悄悄修改类里的任何变量（比如不修改
+2.  **后面的 `const`是干嘛的**：意思是承诺在这个函数内部，绝对不会悄悄修改类里的任何变量（比如不修改
 \_`length`），只是纯粹地读数据。
-```
 
 
 接下来开始测试一下我们写的函数
@@ -166,10 +141,7 @@ void test1()
 {
     MyString s1;
     cout << s1.c_str() << endl;
-```
 
-
-```cpp
     MyString s2("hello c++");
     cout << s2.c_str() << endl;
 }
@@ -189,16 +161,11 @@ Copy）**。
 **后果**：
 
 1.  **互相牵连**：你改 `s2` 的字符，`s1`
-```cpp
 的字符也跟着变了，它们没有独立主权。
-```
-
 
 2.  **内存崩溃（Double Free）**：当函数结束，`s2`
-```cpp
 先死，调用析构函数把这块内存 `delete[]` 了。接着 `s1` 死，它又去
 `delete[]` 这块已经被释放的内存！程序瞬间崩溃。
-```
 
 
 <!-- -->
@@ -216,7 +183,7 @@ MyString::MyString(const MyString &other)
 
 
 - **为什么参数是
-  `const`**：因为我们只是去“抄作业”的，我们保证在复制的过程中，绝对不会不小心修改了被抄的对象（`other`）。
+  `const`**：因为我们只是去复制的，我们保证在复制的过程中，绝对不会不小心修改了被抄的对象（`other`）。
 
 - **为什么一定要加引用符号 `&`？**：
 
@@ -225,16 +192,12 @@ MyString::MyString(const MyString &other)
   - 值传递在传参的一瞬间，又会去调用拷贝构造函数。
 
   - 这样就会陷入：*为了调用拷贝构造函数 -> 需要传参 ->
-```cpp
 传参又触发拷贝构造函数 -> 再次传参...*
 的**死循环（无限递归）**，直到电脑内存耗尽程序崩溃。
-```
-
 
   - 加上 `&` 变成引用，就只是给旧对象起个别名叫
-```cpp
 `other`，直接拿来用，不会触发新的拷贝。
-```
+
 
 
 接下来我们测试一下，同时补充两个辅助函数
@@ -263,16 +226,10 @@ void test2()
 {
     MyString s1("hello");
     cout << s1.c_str() << endl;
-```
 
-
-```cpp
     MyString s2 = s1;
     cout << s2.c_str() << endl;
-```
 
-
-```cpp
     s2.set_char(0, 'B');
     cout << "修改后s2为：" << s2.c_str() << endl;
 }
@@ -299,23 +256,14 @@ MyString &MyString::operator=(const MyString &other)
     {
         return *this;
     }
-```
 
-
-```cpp
     delete[] _data;
-```
 
-
-```cpp
     _length = other._length;
     _capacity = _length;
     _data = new char[_capacity + 1];
     strcpy(_data, other._data);
-```
 
-
-```cpp
     return *this;
 }
 ```
@@ -358,42 +306,24 @@ void test3()
     MyString s1("Apple");
     MyString s2("Banana");
     MyString s3("Orange");
-```
 
-
-```cpp
     cout << "赋值前:" << endl;
     cout << "s1: " << s1.c_str() << ", s2: " << s2.c_str() << ", s3: " << s3.c_str() << endl;
-```
 
-
-```cpp
     // 测试点 1：连续赋值 (s3 = s2 = s1)
     s3 = s2 = s1;
-```
 
-
-```cpp
     cout << "\n连续赋值后:" << endl;
     cout << "s1: " << s1.c_str() << ", s2: " << s2.c_str() << ", s3: " << s3.c_str() << endl;
-```
 
-
-```cpp
     // 测试点 2：修改 s2，看看 s1 和 s3 会不会被影响（验证深拷贝）
     s2.set_char(0, 'G'); // 把 s2 改成 "Gpple"
-```
 
-
-```cpp
     cout << "\n修改 s2 后的独立性测试:" << endl;
     cout << "s1 (应该还是 Apple): " << s1.c_str() << endl;
     cout << "s2 (应该变成了 Gpple): " << s2.c_str() << endl;
     cout << "s3 (应该还是 Apple): " << s3.c_str() << endl;
-```
 
-
-```cpp
     // 测试点 3：自我赋值测试，确保不崩溃
     s1 = s1;
     cout << "\n自我赋值后 s1 依然完好: " << s1.c_str() << endl;
@@ -428,20 +358,14 @@ MyString::MyString(MyString &&other) noexcept
 MyString &MyString::operator=(MyString &&other) noexcept
 {
     cout << "【触发移动赋值运算符】" << endl;
-```
 
-
-```cpp
     if (this != &other)
     {
         delete[] _data;
         _data = other._data;
         _length = other._length;
         _capacity = other._capacity;
-```
 
-
-```cpp
         other._data = nullptr;
         other._length = 0;
         other._capacity = 0;
@@ -480,15 +404,9 @@ void test3()
 {
     MyString s1("very long string");
     cout << "s1初始内容：" << s1.c_str() << endl;
-```
 
-
-```cpp
     MyString s2 = move(s1);
-```
 
-
-```cpp
     cout << "移动后" << endl;
     cout << "s2的内容：" << s2.c_str() << endl;
     cout << "s1的内容：" << s1.c_str() << endl;
@@ -506,9 +424,8 @@ void test3()
 1.  **读写模式**：比如 `s[0] = 'A';`，我们要去修改里面的字符。
 
 2.  **只读模式**：比如把字符串传给一个只读函数
-```cpp
 `void print(const MyString& s)` 时，我们只想打印 `s[0]`，不能修改。
-```
+
 
 
 为了应对这两种情况，我们必须重载两个版本的
@@ -554,25 +471,16 @@ void test4()
 {
     MyString s1("hello");
     cout << "初始内容：" << s1.c_str() << endl;
-```
 
-
-```cpp
     s1[0] = 'H';
     cout << "修改s1[0]后：" << s1.c_str() << endl;
-```
 
-
-```cpp
     for (size_t i = 0; i < s1.size(); ++i)
     {
         cout << s1[i] << " ";
     }
     cout << endl;
-```
 
-
-```cpp
     print_first_char(s1);
 }
 ```
@@ -594,16 +502,10 @@ MyString &MyString::operator+=(const MyString &other)
 {
     if (other._length == 0)
         return *this;
-```
 
-
-```cpp
     size_t new_length = _length + other._length;
     char *new_data = new char[new_length + 1];
-```
 
-
-```cpp
     if (_data)
     {
         strcpy(new_data, _data);
@@ -612,30 +514,18 @@ MyString &MyString::operator+=(const MyString &other)
     {
         new_data[0] = '\0';
     }
-```
 
-
-```cpp
     if (other._data)
     {
         strcat(new_data, other._data);
     }
-```
 
-
-```cpp
     delete[] _data;
-```
 
-
-```cpp
     _data = new_data;
     _length = new_length;
     _capacity = new_length;
-```
 
-
-```cpp
     return *this;
 }
 ```
@@ -661,18 +551,11 @@ MyString s3 = "Hello" + s2; // 相当于 "Hello".operator+(s2) ？？？
 
 有两种解决办法：
 
-1.  **高级写法（我们用的这种）**：我们在全局 `+`
-```cpp
-里面，只调用了类内部公开的 `+=` 运算符。因为 `+=`
-是类的内部成员，它可以合法访问所有私有变量。这种不依赖特权、只用公开接口的写法，在设计模式里叫**低耦合**，是非常高级的代码风格。
-```
+1.  **高级写法（我们用的这种）**：我们在全局 `+`里面，只调用了类内部公开的 `+=` 运算符。因为 `+=`是类的内部成员，它可以合法访问所有私有变量。这种不依赖特权、只用公开接口的写法，在设计模式里叫**低耦合**，是非常高级的代码风格。
 
 
-2.  **特殊通行证（`friend`
-```cpp
-友元）**：如果它真的非要直接读私有变量，我们可以在类内部给它开个后门，写一行
-`friend MyString operator+(...);`。这样它就成了这个类的“好基友”，可以随意翻看私有隐私了。
-```
+
+2.  **特殊通行证（`friend`友元）**：如果它真的非要直接读私有变量，我们可以在类内部给它开个后门，写一行`friend MyString operator+(...);`。这样它就成了这个类的“好基友”，可以随意翻看私有隐私了。
 
 
 <!-- -->
@@ -702,27 +585,15 @@ void test5()
 {
     MyString s1("hello");
     MyString s2(" world");
-```
 
-
-```cpp
     cout << "测试 + 号" << endl;
-```
 
-
-```cpp
     MyString s3 = s1 + s2;
-```
 
-
-```cpp
     cout << s1.c_str() << endl;
     cout << s2.c_str() << endl;
     cout << s3.c_str() << endl;
-```
 
-
-```cpp
     cout << "测试 += 号" << endl;
     s1 += s2;
     cout << s1.c_str() << endl;
@@ -784,10 +655,7 @@ void test6()
     MyString s1("hello");
     MyString s2("C++");
     MyString s3("world");
-```
 
-
-```cpp
     cout << s1 << " " << s2 << " " << s3 << endl;
 }
 ```
@@ -818,42 +686,27 @@ bool operator==(const MyString &lhs, const MyString &rhs)
 {
     return strcmp(lhs.c_str(), rhs.c_str()) == 0;
 }
-```
 
-
-```cpp
 bool operator!=(const MyString &lhs, const MyString &rhs)
 {
     return !(lhs == rhs);
 }
-```
 
-
-```cpp
 bool operator<(const MyString &lhs, const MyString &rhs)
 {
     return strcmp(lhs.c_str(), rhs.c_str()) < 0;
 }
-```
 
-
-```cpp
 bool operator>(const MyString &lhs, const MyString &rhs)
 {
     return rhs < lhs;
 }
-```
 
-
-```cpp
 bool operator<=(const MyString &lhs, const MyString &rhs)
 {
     return !(lhs > rhs);
 }
-```
 
-
-```cpp
 bool operator>=(const MyString &lhs, const MyString &rhs)
 {
     return !(lhs < rhs);
@@ -869,10 +722,7 @@ void test7()
     MyString s1("apple");
     MyString s2("banana");
     MyString s3("apple");
-```
 
-
-```cpp
     cout << (s1 == s3 ? "Yes" : "No") << endl;
     cout << (s1 != s2 ? "Yes" : "No") << endl;
 }
@@ -895,34 +745,22 @@ istream &operator>>(istream &is, MyString &str)
 {
     // 先清空原本字符串里的旧数据（直接赋一个空字符串对象）
     str = MyString();
-```
 
-
-```cpp
     char ch;
     // 跳过前导空白字符（空格、回车、制表符等）
     while (is.get(ch) && isspace(ch))
     {
     }
-```
 
-
-```cpp
     // 如果读到文件尾(EOF)或者流出错，直接返回
     if (!is)
         return is;
-```
 
-
-```cpp
     // 此时 ch 已经是第一个有效字符了
     char buf[1024];
     size_t index = 0;
     buf[index++] = ch;
-```
 
-
-```cpp
     // 循环读取，直到遇到下一个空白字符
     while (is.get(ch) && !isspace(ch))
     {
@@ -934,20 +772,14 @@ istream &operator>>(istream &is, MyString &str)
             index = 0;
         }
     }
-```
 
-
-```cpp
     // 把最后残留在缓冲区的数据追加到 str
     if (index > 0)
     {
         buf[index] = '\0';
         str += MyString(buf);
     }
-```
 
-
-```cpp
     return is;
 }
 ```
@@ -983,17 +815,11 @@ istream &getline(istream &is, MyString &str, char delim)
 {
     // 清空原本的数据
     str = MyString();
-```
 
-
-```cpp
     char buf[1024];
     size_t index = 0;
     char ch;
-```
 
-
-```cpp
     // 循环读取，直到读到分隔符或者流结束
     while (is.get(ch) && ch != delim)
     {
@@ -1005,20 +831,14 @@ istream &getline(istream &is, MyString &str, char delim)
             index = 0;
         }
     }
-```
 
-
-```cpp
     // 倒出最后残留的数据
     if (index > 0)
     {
         buf[index] = '\0';
         str += MyString(buf);
     }
-```
 
-
-```cpp
     return is;
 }
 ```
@@ -1038,26 +858,17 @@ void test8()
 {
     MyString s1;
     MyString s2;
-```
 
-
-```cpp
     cout << "========= 测试 cin >> =========" << endl;
     cout << "请输入两个单词（用空格隔开）: ";
     cin >> s1 >> s2;
     cout << "读取到的单词 1: " << s1 << endl;
     cout << "读取到的单词 2: " << s2 << endl;
-```
 
-
-```cpp
     // 吸收掉残留的回车符，防止影响接下来的 getline
     char flush_char;
     cin.get(flush_char);
-```
 
-
-```cpp
     cout << "\n========= 测试 getline =========" << endl;
     cout << "请输入一整行带空格的句子: ";
     getline(cin, s1);
@@ -1073,86 +884,56 @@ void test8()
 ```cpp
 #ifndef MYSTRING_H
 #define MYSTRING_H
-```
 
-
-```cpp
 #include <iostream>
 #include <cstring>
 #include <utility> // 为了 move
-```
 
-
-```cpp
 class MyString
 {
 private:
     char *_data;
     size_t _length;
     size_t _capacity;
-```
 
-
-```cpp
 public:
     // 构造与析构
     MyString();
     MyString(const char *str);
     ~MyString();
-```
 
-
-```cpp
     // 拷贝构造与移动构造
     MyString(const MyString &other);
     MyString(MyString &&other) noexcept;
-```
 
-
-```cpp
     // 赋值运算符
     MyString &operator=(const MyString &other);
     MyString &operator=(MyString &&other) noexcept;
-```
 
-
-```cpp
     // 常用功能
     const char *c_str() const;
     size_t size() const;
     void set_char(size_t index, char ch);
-```
 
-
-```cpp
     // 运算符重载 (成员函数)
     char &operator[](size_t index);
     const char &operator[](size_t index) const;
     MyString &operator+=(const MyString &other);
 };
-```
 
-
-```cpp
 // 运算符重载 (非成员函数声明)
 MyString operator+(const MyString &lhs, const MyString &rhs);
 std::ostream &operator<<(std::ostream &os, const MyString &str);
 std::istream &operator>>(std::istream &is, MyString &str);
 std::istream &getline(std::istream &is, MyString &str, char delim = '\n');
-```
 
-
-```cpp
 bool operator==(const MyString &lhs, const MyString &rhs);
 bool operator!=(const MyString &lhs, const MyString &rhs);
 bool operator<(const MyString &lhs, const MyString &rhs);
 bool operator>(const MyString &lhs, const MyString &rhs);
 bool operator<=(const MyString &lhs, const MyString &rhs);
 bool operator>=(const MyString &lhs, const MyString &rhs);
-```
 
-
-```cpp
 #endif // MYSTRING_H
 ```
 
@@ -1161,25 +942,16 @@ bool operator>=(const MyString &lhs, const MyString &rhs);
 
 ```cpp
 #include "MyString.h"
-```
 
-
-```cpp
 using namespace std; // 在 .cpp 文件中可以使用这个，不影响其他文件
-```
 
-
-```cpp
 // 1. 默认构造函数
 MyString::MyString() : _length(0), _capacity(0)
 {
     _data = new char[1];
     _data[0] = '\0';
 }
-```
 
-
-```cpp
 // 2. 带参构造函数
 MyString::MyString(const char *str)
 {
@@ -1198,36 +970,24 @@ MyString::MyString(const char *str)
         _data[0] = '\0';
     }
 }
-```
 
-
-```cpp
 // 3. 析构函数
 MyString::~MyString()
 {
     delete[] _data;
 }
-```
 
-
-```cpp
 // 辅助函数
 const char *MyString::c_str() const
 {
     return _data ? _data : "";
 }
-```
 
-
-```cpp
 size_t MyString::size() const
 {
     return _length;
 }
-```
 
-
-```cpp
 void MyString::set_char(size_t index, char ch)
 {
     if (index < _length)
@@ -1235,10 +995,7 @@ void MyString::set_char(size_t index, char ch)
         _data[index] = ch;
     }
 }
-```
 
-
-```cpp
 // 4. 拷贝构造函数
 MyString::MyString(const MyString &other)
 {
@@ -1247,10 +1004,7 @@ MyString::MyString(const MyString &other)
     _data = new char[_capacity + 1];
     strcpy(_data, other._data);
 }
-```
 
-
-```cpp
 // 5. 拷贝赋值运算符
 MyString &MyString::operator=(const MyString &other)
 {
@@ -1258,29 +1012,17 @@ MyString &MyString::operator=(const MyString &other)
     {
         return *this;
     }
-```
 
-
-```cpp
     delete[] _data;
-```
 
-
-```cpp
     _length = other._length;
     _capacity = _length;
     _data = new char[_capacity + 1];
     strcpy(_data, other._data);
-```
 
-
-```cpp
     return *this;
 }
-```
 
-
-```cpp
 // 6. 移动构造函数
 MyString::MyString(MyString &&other) noexcept
     : _data(other._data), _length(other._length), _capacity(other._capacity)
@@ -1290,71 +1032,47 @@ MyString::MyString(MyString &&other) noexcept
     other._capacity = 0;
     cout << "【触发移动构造函数】" << endl;
 }
-```
 
-
-```cpp
 // 7. 移动赋值运算符
 MyString &MyString::operator=(MyString &&other) noexcept
 {
     cout << "【触发移动赋值运算符】" << endl;
-```
 
-
-```cpp
     if (this != &other)
     {
         delete[] _data;
         _data = other._data;
         _length = other._length;
         _capacity = other._capacity;
-```
 
-
-```cpp
         other._data = nullptr;
         other._length = 0;
         other._capacity = 0;
     }
     return *this;
 }
-```
 
-
-```cpp
 // 8. 下标操作符 (普通)
 char &MyString::operator[](size_t index)
 {
     return _data[index];
 }
-```
 
-
-```cpp
 // 9. 下标操作符 (常量)
 const char &MyString::operator[](size_t index) const
 {
     return _data[index];
 }
-```
 
-
-```cpp
 // 10. 追加操作符 (+=)
 MyString &MyString::operator+=(const MyString &other)
 {
     if (other._length == 0)
         return *this;
-```
 
-
-```cpp
     size_t new_length = _length + other._length;
     char *new_data = new char[new_length + 1];
-```
 
-
-```cpp
     if (_data)
     {
         strcpy(new_data, _data);
@@ -1363,41 +1081,23 @@ MyString &MyString::operator+=(const MyString &other)
     {
         new_data[0] = '\0';
     }
-```
 
-
-```cpp
     if (other._data)
     {
         strcat(new_data, other._data);
     }
-```
 
-
-```cpp
     delete[] _data;
-```
 
-
-```cpp
     _data = new_data;
     _length = new_length;
     _capacity = new_length;
-```
 
-
-```cpp
     return *this;
 }
-```
 
-
-```cpp
 // --- 下面是非成员函数的实现 ---
-```
 
-
-```cpp
 // 11. 相加操作符 (+)
 MyString operator+(const MyString &lhs, const MyString &rhs)
 {
@@ -1405,53 +1105,35 @@ MyString operator+(const MyString &lhs, const MyString &rhs)
     result += rhs;
     return result;
 }
-```
 
-
-```cpp
 // 12. 重载输出流操作符 (<<)
 ostream &operator<<(ostream &os, const MyString &str)
 {
     os << str.c_str();
     return os;
 }
-```
 
-
-```cpp
 // 14. 重载流提取运算符 (>>)
 istream &operator>>(istream &is, MyString &str)
 {
     // 先清空原本字符串里的旧数据（直接赋一个空字符串对象）
     str = MyString();
-```
 
-
-```cpp
     char ch;
     // 跳过前导空白字符（空格、回车、制表符等）
     while (is.get(ch) && isspace(ch))
     {
     }
-```
 
-
-```cpp
     // 如果读到文件尾(EOF)或者流出错，直接返回
     if (!is)
         return is;
-```
 
-
-```cpp
     // 此时 ch 已经是第一个有效字符了
     char buf[1024];
     size_t index = 0;
     buf[index++] = ch;
-```
 
-
-```cpp
     // 循环读取，直到遇到下一个空白字符
     while (is.get(ch) && !isspace(ch))
     {
@@ -1463,43 +1145,28 @@ istream &operator>>(istream &is, MyString &str)
             index = 0;
         }
     }
-```
 
-
-```cpp
     // 把最后残留在缓冲区的数据追加到 str
     if (index > 0)
     {
         buf[index] = '\0';
         str += MyString(buf);
     }
-```
 
-
-```cpp
     return is;
 }
-```
 
-
-```cpp
 // 15. 实现 getline 函数
 // 核心逻辑：不跳过前导空白，一直读取直到遇到指定的结束符（默认是 '\n'）
 istream &getline(istream &is, MyString &str, char delim)
 {
     // 清空原本的数据
     str = MyString();
-```
 
-
-```cpp
     char buf[1024];
     size_t index = 0;
     char ch;
-```
 
-
-```cpp
     // 循环读取，直到读到分隔符或者流结束
     while (is.get(ch) && ch != delim)
     {
@@ -1511,67 +1178,43 @@ istream &getline(istream &is, MyString &str, char delim)
             index = 0;
         }
     }
-```
 
-
-```cpp
     // 倒出最后残留的数据
     if (index > 0)
     {
         buf[index] = '\0';
         str += MyString(buf);
     }
-```
 
-
-```cpp
     return is;
 }
-```
 
-
-```cpp
 // 13. 比较操作符
 bool operator==(const MyString &lhs, const MyString &rhs)
 {
     return strcmp(lhs.c_str(), rhs.c_str()) == 0;
 }
-```
 
-
-```cpp
 bool operator!=(const MyString &lhs, const MyString &rhs)
 {
     return !(lhs == rhs);
 }
-```
 
-
-```cpp
 bool operator<(const MyString &lhs, const MyString &rhs)
 {
     return strcmp(lhs.c_str(), rhs.c_str()) < 0;
 }
-```
 
-
-```cpp
 bool operator>(const MyString &lhs, const MyString &rhs)
 {
     return rhs < lhs;
 }
-```
 
-
-```cpp
 bool operator<=(const MyString &lhs, const MyString &rhs)
 {
     return !(lhs > rhs);
 }
-```
 
-
-```cpp
 bool operator>=(const MyString &lhs, const MyString &rhs)
 {
     return !(lhs < rhs);
@@ -1583,121 +1226,69 @@ bool operator>=(const MyString &lhs, const MyString &rhs)
 
 ```cpp
 #include "MyString.h"
-```
-
-
-```cpp
 using namespace std;
-```
 
-
-```cpp
 void test1()
 {
     MyString s1;
     cout << s1.c_str() << endl;
-```
 
-
-```cpp
     MyString s2("hello c++");
     cout << s2.c_str() << endl;
 }
-```
 
-
-```cpp
 void test2()
 {
     MyString s1("hello");
     cout << s1.c_str() << endl;
-```
 
-
-```cpp
     MyString s2 = s1;
     cout << s2.c_str() << endl;
-```
 
-
-```cpp
     s2.set_char(0, 'B');
     cout << "修改后s2为：" << s2.c_str() << endl;
 }
-```
 
-
-```cpp
 void test3_1()
 {
     MyString s1("Apple");
     MyString s2("Banana");
     MyString s3("Orange");
-```
 
-
-```cpp
     cout << "赋值前:" << endl;
     cout << "s1: " << s1.c_str() << ", s2: " << s2.c_str() << ", s3: " << s3.c_str() << endl;
-```
 
-
-```cpp
     // 测试点 1：连续赋值 (s3 = s2 = s1)
     s3 = s2 = s1;
-```
 
-
-```cpp
     cout << "\n连续赋值后:" << endl;
     cout << "s1: " << s1.c_str() << ", s2: " << s2.c_str() << ", s3: " << s3.c_str() << endl;
-```
 
-
-```cpp
     // 测试点 2：修改 s2，看看 s1 和 s3 会不会被影响（验证深拷贝）
     s2.set_char(0, 'G'); // 把 s2 改成 "Gpple"
-```
 
-
-```cpp
     cout << "\n修改 s2 后的独立性测试:" << endl;
     cout << "s1 (应该还是 Apple): " << s1.c_str() << endl;
     cout << "s2 (应该变成了 Gpple): " << s2.c_str() << endl;
     cout << "s3 (应该还是 Apple): " << s3.c_str() << endl;
-```
 
-
-```cpp
     // 测试点 3：自我赋值测试，确保不崩溃
     s1 = s1;
     cout << "\n自我赋值后 s1 依然完好: " << s1.c_str() << endl;
 }
-```
 
-
-```cpp
 void test3_2()
 {
     MyString s1("very long string");
     cout << "s1初始内容：" << s1.c_str() << endl;
-```
 
-
-```cpp
     MyString s2 = move(s1);
-```
 
-
-```cpp
     cout << "移动后" << endl;
     cout << "s2的内容：" << s2.c_str() << endl;
     cout << "s1的内容：" << s1.c_str() << endl;
 }
-```
 
-
-```cpp
 void print_first_char(const MyString &str)
 {
     if (str.size() > 0)
@@ -1705,136 +1296,82 @@ void print_first_char(const MyString &str)
         cout << "函数内部读取的首字母: " << str[0] << endl;
     }
 }
-```
 
-
-```cpp
 void test4()
 {
     MyString s1("hello");
     cout << "初始内容：" << s1.c_str() << endl;
-```
 
-
-```cpp
     s1[0] = 'H';
     cout << "修改s1[0]后：" << s1.c_str() << endl;
-```
 
-
-```cpp
     for (size_t i = 0; i < s1.size(); ++i)
     {
         cout << s1[i] << " ";
     }
     cout << endl;
-```
 
-
-```cpp
     print_first_char(s1);
 }
-```
 
-
-```cpp
 void test5()
 {
     MyString s1("hello");
     MyString s2(" world");
-```
 
-
-```cpp
     cout << "测试 + 号" << endl;
-```
 
-
-```cpp
     MyString s3 = s1 + s2;
-```
 
-
-```cpp
     cout << s1.c_str() << endl;
     cout << s2.c_str() << endl;
     cout << s3.c_str() << endl;
-```
 
-
-```cpp
     cout << "测试 += 号" << endl;
     s1 += s2;
     cout << s1.c_str() << endl;
 }
-```
 
-
-```cpp
 void test6()
 {
     MyString s1("hello");
     MyString s2("C++");
     MyString s3("world");
-```
 
-
-```cpp
     cout << s1 << " " << s2 << " " << s3 << endl;
 }
-```
 
-
-```cpp
 void test7()
 {
     MyString s1("apple");
     MyString s2("banana");
     MyString s3("apple");
-```
 
-
-```cpp
     cout << (s1 == s3 ? "Yes" : "No") << endl;
     cout << (s1 != s2 ? "Yes" : "No") << endl;
 }
-```
 
-
-```cpp
 void test8()
 {
     MyString s1;
     MyString s2;
-```
 
-
-```cpp
     cout << "========= 测试 cin >> =========" << endl;
     cout << "请输入两个单词（用空格隔开）: ";
     cin >> s1 >> s2;
     cout << "读取到的单词 1: " << s1 << endl;
     cout << "读取到的单词 2: " << s2 << endl;
-```
 
-
-```cpp
     // 吸收掉残留的回车符，防止影响接下来的 getline
     char flush_char;
     cin.get(flush_char);
-```
 
-
-```cpp
     cout << "\n========= 测试 getline =========" << endl;
     cout << "请输入一整行带空格的句子: ";
     getline(cin, s1);
     cout << "读取到的整行内容为: " << s1 << endl;
 }
-```
 
-
-```cpp
 int main()
 {
     cout << "--- 测试 ---" << endl;
