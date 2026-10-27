@@ -66,10 +66,7 @@ void queueInit(Queue* q)
     // 所以队头 (front) 和队尾 (rear) 都指向 NULL（空）
     q->front = NULL;
     q->rear = NULL;
-```
 
-
-```c
     printf("初始化成功，队列目前为空\n");
 }
 ```
@@ -118,26 +115,17 @@ bool queueIsEmpty(Queue* q)
 Node* createNode(int value)
 {
     Node* newNode = (Node*)malloc(sizeof(Node));
-```
 
-
-```c
     //检测是否malloc成功
     if (newNode == NULL)
     {
         perror("malloc failed");
         return NULL;
     }
-```
 
-
-```c
     newNode->data = value;
     newNode->next = NULL;
-```
 
-
-```c
     return newNode;
 }
 ```
@@ -153,10 +141,7 @@ void queuePush(Queue* q, int value)
     {
         return;
     }
-```
 
-
-```c
     //入队情况要分类讨论
     if (queueIsEmpty(q))
     {
@@ -203,23 +188,14 @@ int queuePop(Queue* q)
         printf("出队失败，队列是空的\n");
         return -1;
     }
-```
 
-
-```c
     // 我们必须用一个临时指针 temp 抓住现在的队头车厢，不然等会儿改变指针后就找不到它了！
     Node* tmp = q->front;
     int popValue = tmp->data;
-```
 
-
-```c
     //让队列向前走一步
     q->front = q->front->next;
-```
 
-
-```c
     //【极其致命的隐藏雷区！】检查队伍是不是空了
     // 如果刚才走的那个人，刚好是队伍里的最后一个人
     // 那么现在 q->front 已经变成了 NULL。
@@ -229,15 +205,9 @@ int queuePop(Queue* q)
     {
         q->rear = NULL;
     }
-```
 
-
-```c
     free(tmp);
-```
 
-
-```c
     printf("%d出队成功\n", popValue);
     return popValue;
 }
@@ -283,10 +253,7 @@ void queueDestroy(Queue* q)
     {
         queuePop(q);
     }
-```
 
-
-```c
     printf("队列成功销毁\n");
 }
 ```
@@ -303,17 +270,11 @@ Queue.h
 
 ```c
 #pragma once
-```
 
-
-```c
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-```
 
-
-```c
 // 第 1 个结构体：链表的节点 (相当于“火车车厢”)
 typedef struct Node
 {
@@ -331,10 +292,7 @@ typedef struct Queue
     Node* front;//队头指针：永远指向排在最前面的人（出队的地方）
     Node* rear;//队尾指针：永远指向排在最后面的人（入队的地方）
 }Queue;
-```
 
-
-```c
 //初始化队列
 void queueInit(Queue* q);
 //判空
@@ -354,31 +312,19 @@ Queue.c
 
 ```c
 #define _CRT_SECURE_NO_WARNINGS 1
-```
 
-
-```c
 #include "Queue.h"
-```
 
-
-```c
 void queueInit(Queue* q)
 {
     // 刚开始的时候，站台是空的，一节车厢（乘客）都没有
     // 所以队头 (front) 和队尾 (rear) 都指向 NULL（空）
     q->front = NULL;
     q->rear = NULL;
-```
 
-
-```c
     printf("初始化成功，队列目前为空\n");
 }
-```
 
-
-```c
 bool queueIsEmpty(Queue* q)
 {
     //只要队头没有指向任何车厢，说明队列是空的
@@ -391,40 +337,25 @@ bool queueIsEmpty(Queue* q)
         return false;
     }
 }
-```
 
-
-```c
 //辅助函数（创建新节点）
 Node* createNode(int value)
 {
     Node* newNode = (Node*)malloc(sizeof(Node));
-```
 
-
-```c
     //检测是否malloc成功
     if (newNode == NULL)
     {
         perror("malloc failed");
         return NULL;
     }
-```
 
-
-```c
     newNode->data = value;
     newNode->next = NULL;
-```
 
-
-```c
     return newNode;
 }
-```
 
-
-```c
 void queuePush(Queue* q, int value)
 {
     Node* newNode = createNode(value);
@@ -432,10 +363,7 @@ void queuePush(Queue* q, int value)
     {
         return;
     }
-```
 
-
-```c
     //入队情况要分类讨论
     if (queueIsEmpty(q))
     {
@@ -451,16 +379,10 @@ void queuePush(Queue* q, int value)
         q->rear->next = newNode;
         q->rear = newNode;
     }
-```
 
-
-```c
     printf("%d入队成功\n", value);
 }
-```
 
-
-```c
 int queuePop(Queue* q)
 {
     if (queueIsEmpty(q))
@@ -468,23 +390,14 @@ int queuePop(Queue* q)
         printf("出队失败，队列是空的\n");
         return -1;
     }
-```
 
-
-```c
     // 我们必须用一个临时指针 temp 抓住现在的队头车厢，不然等会儿改变指针后就找不到它了！
     Node* tmp = q->front;
     int popValue = tmp->data;
-```
 
-
-```c
     //让队列向前走一步
     q->front = q->front->next;
-```
 
-
-```c
     //【极其致命的隐藏雷区！】检查队伍是不是空了
     // 如果刚才走的那个人，刚好是队伍里的最后一个人
     // 那么现在 q->front 已经变成了 NULL。
@@ -494,22 +407,13 @@ int queuePop(Queue* q)
     {
         q->rear = NULL;
     }
-```
 
-
-```c
     free(tmp);
-```
 
-
-```c
     printf("%d出队成功\n", popValue);
     return popValue;
 }
-```
 
-
-```c
 void queueDestroy(Queue* q)
 {
     //借助我们写的queuePop函数
@@ -517,10 +421,7 @@ void queueDestroy(Queue* q)
     {
         queuePop(q);
     }
-```
 
-
-```c
     printf("队列成功销毁\n");
 }
 ```
@@ -530,24 +431,15 @@ test.c
 
 ```c
 #define _CRT_SECURE_NO_WARNINGS 1
-```
 
-
-```c
 #include "Queue.h"
-```
 
-
-```c
 int main()
 {
     Queue myQueue;
     
     queueInit(&myQueue);
-```
 
-
-```c
     if (queueIsEmpty)
     {
         printf("队列为空\n");
@@ -556,20 +448,11 @@ int main()
     {
         printf("队列不为空\n");
     }
-```
 
-
-```c
     queuePush(&myQueue, 1);
-```
 
-
-```c
     queuePop(&myQueue);
-```
 
-
-```c
     queueDestroy(&myQueue);
     return 0;
 }

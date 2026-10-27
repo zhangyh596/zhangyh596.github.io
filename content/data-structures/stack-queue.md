@@ -57,19 +57,13 @@ typedef struct
 void stackInit(Stack* s, int capacity)
 {
     s->data = (int*)malloc(capacity * sizeof(int));
-```
 
-
-```c
     if (s->data == NULL)
     {
         perror("malloc failed");
         exit(1);//强行退出
     }
-```
 
-
-```c
     s->top = -1;//说明现在是空的
     s->capacity = capacity;//记住最大容量
 }
@@ -117,10 +111,7 @@ void stackPush(Stack* s, int value)
         printf("入栈失败，栈已经满了\n");
         return;
     }
-```
 
-
-```c
     //移动游标并赋值
     s->top++;
     s->data[s->top] = value;
@@ -172,10 +163,7 @@ int stackPop(Stack* s)
         printf("出栈失败，栈是空的\n");
         return -1;
     }
-```
 
-
-```c
     //先把栈顶的数据拿出来存到一个临时变量里
     int popValue = s->data[s->top];
     s->top--;//游标往下走一格，代表原来的栈顶元素被“抛弃”了
@@ -202,10 +190,7 @@ void stackDestroy(Stack* s)
         free(s->data);
         s->data = NULL;
     }
-```
 
-
-```c
     //把游标和容量都恢复到初始状态
     s->top = -1;
     s->capacity = 0;
@@ -233,27 +218,18 @@ void stackPush(Stack* s, int value)
         int newCapacity = s->capacity * 2;
         //我们要先用一个临时钥匙 (newData) 来接新房子的钥匙
         int* newData = (int*)realloc(s->data, newCapacity * sizeof(int));
-```
 
-
-```c
         if (newData == NULL)
         {
             perror("realloc failed");
             return;//放弃这次入栈
         }
-```
 
-
-```c
         s->data = newData;
         s->capacity = newCapacity;
         printf("栈已扩容，新容量为:%d\n", s->capacity);
     }
-```
 
-
-```c
     //移动游标并赋值
     s->top++;
     s->data[s->top] = value;
@@ -268,27 +244,18 @@ Stack.h
 
 ```c
 #pragma once
-```
 
-
-```c
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-```
 
-
-```c
 typedef struct
 {
     int capacity;//薯片桶的长度（最大容量）
     int top;//记录当前位置
     int* data;//真正放薯片的空间（指针）
 }Stack;
-```
 
-
-```c
 //初始化栈
 void stackInit(Stack* s, int capacity);
 //判断栈是否已满（辅助函数）
@@ -308,41 +275,26 @@ Stack.c
 
 ```c
 #define _CRT_SECURE_NO_WARNINGS 1
-```
 
-
-```c
 #include "Stack.h"
-```
 
-
-```c
 // s 代表我们要操作的那个栈（通过指针传进来）
 // capacity 是用户告诉我们，这个栈要多大
 void stackInit(Stack* s, int capacity)
 {
     s->data = (int*)malloc(capacity * sizeof(int));
-```
 
-
-```c
     if (s->data == NULL)
     {
         perror("malloc failed");
         exit(1);//强行退出
     }
-```
 
-
-```c
     s->top = -1;//说明现在是空的
     s->capacity = capacity;//记住最大容量
     printf("成功初始化栈\n");
 }
-```
 
-
-```c
 bool stackIsFull(Stack* s)
 {
     // 逻辑：如果游标 top 已经到了数组的最后一个合法下标，就是满了。
@@ -356,10 +308,7 @@ bool stackIsFull(Stack* s)
         return false;
     }
 }
-```
 
-
-```c
 void stackPush(Stack* s, int value)
 {
     if (stackIsFull(s))
@@ -367,36 +316,24 @@ void stackPush(Stack* s, int value)
         int newCapacity = s->capacity * 2;
         //我们要先用一个临时钥匙 (newData) 来接新房子的钥匙
         int* newData = (int*)realloc(s->data, newCapacity * sizeof(int));
-```
 
-
-```c
         if (newData == NULL)
         {
             perror("realloc failed");
             return;//放弃这次入栈
         }
-```
 
-
-```c
         s->data = newData;
         s->capacity = newCapacity;
         printf("栈已扩容，新容量为:%d\n", s->capacity);
     }
-```
 
-
-```c
     //移动游标并赋值
     s->top++;
     s->data[s->top] = value;
     printf("入栈成功:%d\n", value);
 }
-```
 
-
-```c
 bool stackIsEmpty(Stack* s)
 {
     // 逻辑：如果游标 top 还是当初初始化的 -1，说明里面一个数据都没有
@@ -409,10 +346,7 @@ bool stackIsEmpty(Stack* s)
         return false;
     }
 }
-```
 
-
-```c
 int stackPop(Stack* s)
 {
     if (stackIsEmpty(s))
@@ -420,19 +354,13 @@ int stackPop(Stack* s)
         printf("出栈失败，栈是空的\n");
         return -1;
     }
-```
 
-
-```c
     //先把栈顶的数据拿出来存到一个临时变量里
     int popValue = s->data[s->top];
     s->top--;//游标往下走一格，代表原来的栈顶元素被“抛弃”了
     return popValue;//把取出的数据返回给调用者
 }
-```
 
-
-```c
 void stackDestroy(Stack* s)
 {
     if (s->data != NULL)
@@ -440,10 +368,7 @@ void stackDestroy(Stack* s)
         free(s->data);
         s->data = NULL;
     }
-```
 
-
-```c
     //把游标和容量都恢复到初始状态
     s->top = -1;
     s->capacity = 0;
@@ -456,40 +381,25 @@ test.c
 
 ```c
 #define _CRT_SECURE_NO_WARNINGS 1
-```
 
-
-```c
 #include "Stack.h"
-```
 
-
-```c
 int main()
 {
     Stack myStack;
     stackInit(&myStack, 3);
-```
 
-
-```c
     stackPush(&myStack, 10);
     stackPush(&myStack, 20);
     stackPush(&myStack, 30);
     stackPush(&myStack, 40);
-```
 
-
-```c
     while (!stackIsEmpty(&myStack))
     {
         printf("出栈数据：%d\n", stackPop(&myStack));
     }
     stackPop(&myStack);
-```
 
-
-```c
     stackDestroy(&myStack);
     return 0;
 }

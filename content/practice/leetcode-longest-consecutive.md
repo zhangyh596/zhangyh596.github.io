@@ -280,93 +280,60 @@ Digit）？我们可以用一个生活中的例子 来理解：
 int longestConsecutive(int* nums, int numsSize) {
     if (numsSize <= 1)
         return numsSize;
-```
 
-
-```c
     unsigned int* buff = (unsigned int*)malloc(sizeof(unsigned int) * numsSize);
     unsigned int* src = (unsigned int*)nums;
     unsigned int* dest = buff;
-```
 
-
-```c
     //让负数排到正数前面（异或）
     for (int i = 0; i < numsSize; i++)
     {
         src[i] ^= 0x80000000;
     }
-```
 
-
-```c
     //核心思想（基数排序）把 32 位整数切成 4 个字节，跑 4 轮 (从低位到高位)
     for (int k = 0; k < 4; k++)
     {
         int cnt[256] = { 0 };
-```
 
-
-```c
         //第 1 步：点名记账（算频率）。只看第 k 个字节
         for (int i = 0; i < numsSize; i++)
         {
             int byte_val = (src[i] >> (k * 8)) & 0xFF;
             cnt[byte_val]++;
         }
-```
 
-
-```c
         //第 2 步：前缀和算坐标。算出每种字节对应的“最后一个座位号”
         for (int i = 1; i < 256; i++)
         {
             cnt[i] += cnt[i - 1];
         }
-```
 
-
-```c
         //第 3 步：对号入座（逆序遍历，保证稳定性）。数字直接飞到 dest 里
         for (int i = numsSize - 1; i >= 0; i--)
         {
             unsigned int val = src[i];
             int byte_val = (val >> (k * 8)) & 0xFF;
-```
 
-
-```c
             //cnt-- 极其精妙：先让座位号减 1（变成 C 语言的 0-based 下标），然后入座
             cnt[byte_val]--;
             dest[cnt[byte_val]] = val;
         }
-```
 
-
-```c
         //第 4 步：指针戏法。第 k 轮排完了，下一轮的源头变成现在的 dest，目的地变成 src
         unsigned int* tmp = src;
         src = dest;
         dest = tmp;
     }
-```
 
-
-```c
     free(dest);
-```
 
-
-```c
     //脱掉马甲：把符号位翻转回来，恢复原汁原味的真实数字
     for (int i = 0; i < numsSize; i++)
     {
         nums[i] ^= 0x80000000;
     }
-```
 
-
-```c
     //对排好序的数组进行操作
     int max_len = 1;
     int cur_len = 1;
@@ -386,10 +353,7 @@ int longestConsecutive(int* nums, int numsSize) {
         }
         else
         {
-```
 
-
-```c
         }
     }
     return max_len;

@@ -36,60 +36,39 @@ public:
     // vector的迭代器其实就是原生指针
     typedef T* iterator; 
     typedef const T* const_iterator;
-```
 
-
-```cpp
 private:
     iterator _start;          // 空间头（仓库门）
     iterator _finish;         // 有效元素尾（当前快递结尾）
     iterator _end_of_storage; // 可用空间尾（仓库后墙）
-```
 
-
-```cpp
 public:
     // 构造函数先简单初始化为空
     vector() : _start(nullptr), _finish(nullptr), _end_of_storage(nullptr) {}
-```
 
-
-```cpp
     // 获取当前元素个数
     size_t size() const
     {
          return _finish - _start;
     }
-```
 
-
-```cpp
     // 获取当前总容量
     size_t capacity() const
     {
          return _end_of_storage - _start;
     }
-```
 
-
-```cpp
     iterator begin()
     {
             return _start;
     }
-```
 
-
-```cpp
     iterator end()
     {
             return _finish;
     }
 };
-```
 
-
-```cpp
 }
 ```
 
@@ -125,10 +104,8 @@ it++; // 算法：我不管你底层怎么变魔术，反正 ++ 就能给我下�
 这三个牌子挂到新仓库对应的地方
 ```
 
-6.  最后，把新的数据，安安稳稳地放在 `_finish` 指向的位置，然后把
-```cpp
-`_finish` 往后挪一格
-```
+6.  最后，把新的数据，安安稳稳地放在 `_finish` 指向的位置，然后把 `_finish` 往后挪一格
+
 
 
 **为什么扩容是 2 倍或 1.5 倍？**
@@ -151,10 +128,7 @@ it++; // 算法：我不管你底层怎么变魔术，反正 ++ 就能给我下�
                 T *tmp = new T[n];
                 // 提前记下旧仓库里有多少件快递（极其关键！因为等下 _start 换成新仓库后，就没法用旧距离算了）
                 size_t old_size = size();
-```
 
-
-```cpp
                 if (_start != nullptr)
                 {
                     for (size_t i = 0; i < old_size; ++i)
@@ -163,19 +137,13 @@ it++; // 算法：我不管你底层怎么变魔术，反正 ++ 就能给我下�
                     }
                     delete[] _start;
                 }
-```
 
-
-```cpp
                 _start = tmp;
                 _finish = _start + old_size;
                 _end_of_storage = _start + n;
             }
         }
-```
 
-
-```cpp
         // 尾部插入新元素
         void push_back(const T &x)
         {
@@ -185,10 +153,7 @@ it++; // 算法：我不管你底层怎么变魔术，反正 ++ 就能给我下�
                 size_t new_capacity = capacity() == 0 ? 4 : capacity() * 2;
                 reserve(new_capacity);
             }
-```
 
-
-```cpp
             *_finish = x;
             ++_finish;
         }
@@ -200,23 +165,14 @@ it++; // 算法：我不管你底层怎么变魔术，反正 ++ 就能给我下�
 ```cpp
 #include <iostream>
 #include "MyVector.h"
-```
 
-
-```cpp
 int main() {
     zyh::vector<int> v;
-```
 
-
-```cpp
     // 阶段 1：初始状态
     std::cout << "--- 阶段 1 ---" << std::endl;
     std::cout << "Size: " << v.size() << ", Capacity: " << v.capacity() << std::endl;
-```
 
-
-```cpp
     // 阶段 2：连续插入 4 个元素
     v.push_back(10);
     v.push_back(20);
@@ -224,18 +180,12 @@ int main() {
     v.push_back(40);
     std::cout << "--- 阶段 2 ---" << std::endl;
     std::cout << "Size: " << v.size() << ", Capacity: " << v.capacity() << std::endl;
-```
 
-
-```cpp
     // 阶段 3：插入第 5 个元素（触发扩容！）
     v.push_back(50);
     std::cout << "--- 阶段 3 ---" << std::endl;
     std::cout << "Size: " << v.size() << ", Capacity: " << v.capacity() << std::endl;
-```
 
-
-```cpp
     // 阶段 4：遍历打印
     std::cout << "--- 阶段 4 元素内容 ---" << std::endl;
     // 利用我们刚学过的：iterator 就是原生指针，直接用它来遍历！
@@ -244,10 +194,7 @@ int main() {
         std::cout << *it << " ";
     }
     std::cout << std::endl;
-```
 
-
-```cpp
     return 0;
 }
 ```
@@ -259,16 +206,12 @@ int main() {
 
 这行代码在 C++ 底层实际上偷偷干了两件事：
 
-1.  **分配内存**：在堆上开辟能容纳 `n` 个 `T`
-```cpp
-类型对象的连续空间（这没问题）。
-```
+1.  **分配内存**：在堆上开辟能容纳 `n` 个 `T` 类型对象的连续空间（这没问题）。
 
 
-2.  **强制构造**：编译器会急不可耐地**自动调用这 `n`
-```cpp
-个位置的默认构造函数（Default Constructor）**！
-```
+
+2.  **强制构造**：编译器会急不可耐地**自动调用这 `n` 个位置的默认构造函数（Default Constructor）**！
+
 
 
 这就带来了两个在工业界无法忍受的致命问题：
@@ -326,10 +269,7 @@ SGI STL
                 T *tmp = (T *)::operator new(n * sizeof(T));
                 // 提前记下旧仓库里有多少件快递（极其关键！因为等下 _start 换成新仓库后，就没法用旧距离算了）
                 size_t old_size = size();
-```
 
-
-```cpp
                 if (_start != nullptr)
                 {
                     for (size_t i = 0; i < old_size; ++i)
@@ -338,26 +278,17 @@ SGI STL
                         // 【工业级规范】旧仓库的快递搬走了，必须手动调用析构函数把它销毁
                         _start[i].~T();
                     }
-```
 
-
-```cpp
                     // 【工业级规范】因为是裸内存，退租时必须用 ::operator delete
                     ::operator delete(_start);
                 }
-```
 
-
-```cpp
                 _start = tmp;
                 _finish = _start + old_size;
                 _end_of_storage = _start + n;
             }
         }
-```
 
-
-```cpp
         // 尾部插入新元素
         void push_back(const T &x)
         {
@@ -367,10 +298,7 @@ SGI STL
                 size_t new_capacity = capacity() == 0 ? 4 : capacity() * 2;
                 reserve(new_capacity);
             }
-```
 
-
-```cpp
             new (_finish) T(x); // 含义：就在 _finish 这个地址上，调用 T 的拷贝构造函数，原地生出一个新对象
             ++_finish;
         }
@@ -402,25 +330,16 @@ SGI STL
         vector(size_t n, const T &value = T())
         {
             _start = (T *)::operator new(n * sizeof(T));
-```
 
-
-```cpp
             for (size_t i = 0; i < n; ++i)
             {
                 new (_start + i) T(value);
             }
-```
 
-
-```cpp
             _finish = _start + n;
             _end_of_storage = _start + n;
         }
-```
 
-
-```cpp
         // 析构函数
         ~vector()
         {
@@ -430,10 +349,7 @@ SGI STL
                 {
                     it->~T();
                 }
-```
 
-
-```cpp
                 ::operator delete(_start);
                 _start = _finish = _end_of_storage = nullptr;
             }
@@ -456,18 +372,12 @@ SGI STL
 如果我们不写中间的 `for` 循环，直接执行
 `::operator delete(_start);`，底层会发生这样的惨剧：
 
-1.  **`::operator delete(_start)` 执行：** 操作系统收回了 `vector`
-```cpp
-的连续地皮。
-```
+1.  **`::operator delete(_start)` 执行：** 操作系统收回了 `vector`的连续地皮。
 
 
 2.  **后果：** 存放在这块地皮上的 `string` 对象本身确实消失了。
 
-3.  **灾难发生：** 但是！这些 `string`
-```cpp
-对象在临死前**没有调用它们自己的析构函数**，导致它们自己偷偷在外面申请的那片堆内存（真正存字符串文本的地方）**彻底变成了无人认领的孤魂野鬼**！
-```
+3.  **灾难发生：** 但是！这些 `string`对象在临死前**没有调用它们自己的析构函数**，导致它们自己偷偷在外面申请的那片堆内存（真正存字符串文本的地方）**彻底变成了无人认领的孤魂野鬼**！
 
 
 这就是典型的**内存泄漏（Memory
@@ -504,10 +414,7 @@ Constructor）**。
 
 1.  `v2` 必须自己去向操作系统申请一块**全新的、大小一样的裸内存地皮**。
 2.  然后把 `v1` 地皮上的物品，一个一个地**复制构造**到自己的新地皮上。
-3.  这样，两人各自拥有一块完全独立的地皮，死的时候各回各家，各删各找，完美避开
-```cpp
-Double Free！
-```
+3.  这样，两人各自拥有一块完全独立的地皮，死的时候各回各家，各删各找，完美避开 Double Free！
 
 
 <!-- -->
@@ -517,18 +424,12 @@ Double Free！
         vector(const vector<T> &v)
         {
             _start = (T *)::operator new(v.capacity() * sizeof(T));
-```
 
-
-```cpp
             for (size_t i = 0; i < v.size(); ++i)
             {
                 new (_start + i) T(v._start[i]);
             }
-```
 
-
-```cpp
             _finish = _start + v.size();
             _end_of_storage = _start + v.capacity();
         }
@@ -541,10 +442,7 @@ Double Free！
 #include <iostream>
 #include <string>
 #include "MyVector.h"
-```
 
-
-```cpp
 int main()
 {
     std::cout << "=== 阶段 1：构建 v1 ===" << std::endl;
@@ -558,10 +456,7 @@ int main()
     std::cout << "=== 阶段 3：验证物理隔离 ===" << std::endl;
     // 给 v2 单独尾插一个新字符串，看看会不会影响 v1
     v2.push_back("World");
-```
 
-
-```cpp
     // 打印 v1
     std::cout << "v1 (size: " << v1.size() << ") 元素: ";
     for(zyh::vector<std::string>::iterator it = v1.begin(); it != v1.end(); ++it)
@@ -569,10 +464,7 @@ int main()
         std::cout << *it << " ";
     }
     std::cout << std::endl;
-```
 
-
-```cpp
     // 打印 v2
     std::cout << "v2 (size: " << v2.size() << ") 元素: ";
     for(zyh::vector<std::string>::iterator it = v2.begin(); it != v2.end(); ++it)
@@ -580,10 +472,7 @@ int main()
         std::cout << *it << " ";
     }
     std::cout << std::endl;
-```
 
-
-```cpp
     std::cout << "=== 阶段 4：程序结束，见证奇迹 ===" << std::endl;
     // 当 main 函数结束（遇到 return 0）时：
     // v2 会先调用析构函数，销毁自己的地皮和字符串。
@@ -613,28 +502,18 @@ v3 = v1;                     // 赋值操作
 如果此时编译器执行默认的浅拷贝（直接把 `v1` 的 `_start` 赋值给 `v3` 的
 `_start`），会引发极其惨烈的**双重灾难**：
 
-1.  **内存泄漏**：`v3`
-```cpp
-原本手里那块地皮的指针被覆盖了，导致那块地皮永远无法被回收，变成了赛博空间里的垃圾！
-```
+1.  **内存泄漏**：`v3` 原本手里那块地皮的指针被覆盖了，导致那块地皮永远无法被回收，变成了赛博空间里的垃圾！
 
-2.  **Double Free（段错误）**：`v3` 的指针现在指向了 `v1`
-```cpp
-的地皮。等程序结束时，两人又会对同一块地皮释放两次，系统直接崩溃！
-```
+2.  **Double Free（段错误）**：`v3` 的指针现在指向了 `v1` 的地皮。等程序结束时，两人又会对同一块地皮释放两次，系统直接崩溃！
 
 
 实现的具体步骤如下：
 
-1.  **防范于未然**：判断是不是自己给自己赋值（比如写了
-```cpp
-`v1 = v1;`）。如果是，千万别动，否则会把自己提前砸没了。
-```
+1.  **防范于未然**：判断是不是自己给自己赋值（比如写了`v1 = v1;`）。如果是，千万别动，否则会把自己提前砸没了。
 
-2.  **清理门户**：把 `v3`
-```cpp
-自己原来的物品全杀光，地皮全退掉（和析构函数干的活一模一样）。
-```
+
+2.  **清理门户**：把 `v3`自己原来的物品全杀光，地皮全退掉（和析构函数干的活一模一样）。
+
 
 3.  **另起炉灶**：根据 `v1` 的大小，申请一块全新的地皮。
 4.  **搬运货物**：把 `v1` 里的东西用 placement new 一个个深拷贝过来。
@@ -653,37 +532,22 @@ v3 = v1;                     // 赋值操作
                     {
                         it->~T();
                     }
-```
 
-
-```cpp
                     ::operator delete(_start);
                 }
-```
 
-
-```cpp
                 // 另起炉灶：根据别人的容量申请新地皮
                 _start = (T *)::operator new(v.capacity() * sizeof(T));
-```
 
-
-```cpp
                 for (size_t i = 0; i < v.size(); ++i)
                 {
                     new (_start + i) T(v._start[i]);
                 }
-```
 
-
-```cpp
                 _finish = _start + v.size();
                 _end_of_storage = _start + v.capacity();
             }
-```
 
-
-```cpp
             // 返回自己的引用，支持连续赋值 (比如 v3 = v2 = v1;)
             return *this;
         }
@@ -703,10 +567,7 @@ v3 = v1;                     // 赋值操作
             swap(_start, v._start);
             swap(_finish, v._finish);
             swap(_end_of_storage, v._end_of_storage);
-```
 
-
-```cpp
             return *this;
         }
 ```
@@ -718,28 +579,22 @@ v3 = v1;                     // 赋值操作
 `new`，甚至连自赋值检查都没写，它凭什么能完成“深拷贝”和“释放旧内存”这两大重任？
 
 1.  **借尸还魂（触发拷贝构造）**： 注意看函数的形参
-```cpp
 `vector<T> v`，这里**没有写 `&`
 符号**！这意味着在进入函数体之前，编译器会强行调用你写好的【拷贝构造函数】，在栈上临时深拷贝构造出一个名为
 `v` 的临时小老弟。此时 `v` 手里拿着一份和 `v1`
 一模一样的独立新资产。
-```
 
 2.  **李代桃僵（指针交换 swap）**： 进入函数后，我们用 `std::swap` 把
-```cpp
 `v3` 现在的三个指针和临时小老弟 `v`
 的三个指针**进行了大风吹式的对调**。 对调之后：`v3` 成功拿到了 `v`
 手里的新资产（也就是 `v1` 的深拷贝）。而临时小老弟 `v` 倒霉地接盘了
 `v3` 原来的那一堆旧烂摊子资产。
-```
 
 3.  **借刀杀人（自动触发析构）**： 当 `operator=`
-```cpp
 执行到最后大括号，函数结束时，临时变量 `v`
 的生命周期到头了。编译器会**自动调用 `v` 的析构函数 `~vector()`**。
 因为指针已经交换了，此时 `v` 的析构函数会顺理成章地、开开心心地把你
 `v3` 原本不要的旧资产给**彻底销毁、夷为平地**！
-```
 
 
 好处
@@ -755,10 +610,7 @@ v3 = v1;                     // 赋值操作
 #include <iostream>
 #include <string>
 #include "MyVector"
-```
 
-
-```cpp
 int main()
 {
     std::cout << "=== 阶段 1：准备测试数据 ===" << std::endl;
@@ -781,10 +633,7 @@ int main()
     std::cout << "=== 阶段 4：验证物理隔离 ===" << std::endl;
     // 我们往 v3 里加点新东西，看看 v1 和 v4 会不会跟着变
     v3.push_back("Orange");
-```
 
-
-```cpp
     // --- 打印结果 ---
     std::cout << "v1 (size: " << v1.size() << ") 元素: ";
     for(zyh::vector<std::string>::iterator it = v1.begin(); it != v1.end(); ++it)
@@ -792,30 +641,21 @@ int main()
         std::cout << *it << " ";
     }
     std::cout << std::endl;
-```
 
-
-```cpp
     std::cout << "v3 (size: " << v3.size() << ") 元素: ";
     for(zyh::vector<std::string>::iterator it = v3.begin(); it != v3.end(); ++it)
     {
         std::cout << *it << " ";
     }
     std::cout << std::endl;
-```
 
-
-```cpp
     std::cout << "v4 (size: " << v4.size() << ") 元素: ";
     for(zyh::vector<std::string>::iterator it = v4.begin(); it != v4.end(); ++it)
     {
         std::cout << *it << " ";
     }
     std::cout << std::endl;
-```
 
-
-```cpp
     std::cout << "=== 阶段 5：程序结束，见证奇迹 ===" << std::endl;
     // 程序退出时，v4, v3, v1 将依次调用析构函数。
     // 如果没有段错误（Core Dump），说明我们不仅没有 Double Free，也没有内存泄漏！
@@ -834,10 +674,7 @@ int main()
         {
             return _start[i];
         }
-```
 
-
-```cpp
         // 下标访问（const版：只读）
         const T& operator[](size_t i) const
         {
@@ -867,10 +704,7 @@ int main()
                 size_t new_capacity = capacity() == 0 ? 4 : capacity() * 2;
                 reserve(new_capacity); 
             }
-```
 
-
-```cpp
             // 2. 挪动数据：把 pos 及它后面的元素全部往后挪一格
             iterator end_it = _finish - 1;
             while (end_it >= pos)
@@ -887,17 +721,11 @@ int main()
                 }
                 --end_it;
             }
-```
 
-
-```cpp
             // 3. 填入新元素
             *pos = x; 
             ++_finish;
-```
 
-
-```cpp
             return pos;
         }
 ```
@@ -909,20 +737,11 @@ Bug（迭代器失效问题）
 
 1.  `pos` 作为一个指针，最初指向的是旧地皮上的某个位置（比如 `0x104`）。
 2.  `reserve` 偷偷在底层把整个仓库搬到了新地皮（比如
-```cpp
 `0x500`），并且**直接把旧地皮 `0x100` 给 `delete` 夷为平地了**。
-```
 
-3.  但 `pos`
-```cpp
-这个指针是个“铁憨憨”，它并不知道家已经搬了，它依然死死指着已经被释放的
-`0x104`！
-```
+3.  但 `pos` 这个指针是个“铁憨憨”，它并不知道家已经搬了，它依然死死指着已经被释放的 `0x104`！
 
-4.  接下来你往 `*pos` 写入数据，就是经典的 **野指针访问 /
-```cpp
-Use-After-Free**，程序当场段错误崩溃！
-```
+4.  接下来你往 `*pos` 写入数据，就是经典的 **野指针访问 /Use-After-Free**，程序当场段错误崩溃！
 
 
 **解决方法：记住相对距离（Offset）**
@@ -941,23 +760,14 @@ Use-After-Free**，程序当场段错误崩溃！
             {
                 // 搬家前，先算好 pos 距离 _start 的偏移量
                 size_t offset = pos - _start;
-```
 
-
-```cpp
                 size_t new_capacity = capacity() == 0 ? 4 : capacity() * 2;
                 reserve(new_capacity);
-```
 
-
-```cpp
                 // 搬家后，刷新 pos，让它指向新地皮上的正确位置！
                 pos = _start + offset;
             }
-```
 
-
-```cpp
             // 挪动数据：把 pos 及它后面的元素全部往后挪一格
             iterator end_it = _finish - 1;
             while (end_it >= pos)
@@ -976,10 +786,7 @@ Use-After-Free**，程序当场段错误崩溃！
             }
             *pos = x;
             ++_finish;
-```
 
-
-```cpp
             return pos;
         }
 ```
@@ -991,10 +798,7 @@ Use-After-Free**，程序当场段错误崩溃！
 #include <iostream>
 #include <string>
 #include "MyVector.h"
-```
 
-
-```cpp
 int main()
 {
     std::cout << "=== 阶段 1：测试 push_back 和 operator[] ===" << std::endl;
@@ -1012,10 +816,7 @@ int main()
         std::cout << v[i] << " "; // 测试 operator[]
     }
     std::cout << "\n\n";
-```
 
-
-```cpp
     std::cout << "=== 阶段 2：触发致命危机 (扩容 + 插入) ===" << std::endl;
     // 此时 v 的 size 是 4，capacity 也是 4，仓库已满！
     // 我们获取一个指向第二个元素 "B" 的迭代器（此时它指向旧地皮）
@@ -1027,10 +828,7 @@ int main()
     // 如果没有我们的 offset 修复逻辑，这里继续使用 it 就会直接发生段错误崩溃！
     v.insert(it, "X"); 
     std::cout << "插入成功！没有发生崩溃！\n\n";
-```
 
-
-```cpp
     std::cout << "=== 阶段 3：验证挪动结果 ===" << std::endl;
     std::cout << "插入后 vector 大小: " << v.size() << "，容量: " << v.capacity() << std::endl;
     std::cout << "最终元素: ";
@@ -1074,15 +872,9 @@ int main()
                     *(it - 1) = *it;
                     ++it;
                 }
-```
 
-
-```cpp
                 --_finish;
-```
 
-
-```cpp
                 _finish->~T();
             }
             // C++ 官方标准规定：erase 必须返回被删除元素的【下一个元素】的新位置
@@ -1103,10 +895,7 @@ int main()
                 erase(_finish - 1);
             }
         }
-```
 
-
-```cpp
         // 清空所有元素
         void clear()
         {
@@ -1116,10 +905,7 @@ int main()
                 _finish->~T();
             }
         }
-```
 
-
-```cpp
         // 判断容器是否为空
         bool empty() const
         {
@@ -1134,10 +920,7 @@ int main()
 #include <iostream>
 #include <string>
 #include "MyVector"
-```
 
-
-```cpp
 int main()
 {
     zyh::vector<std::string> v;
@@ -1145,18 +928,12 @@ int main()
     v.push_back("Banana");
     v.push_back("Cherry");
     v.push_back("Date");
-```
 
-
-```cpp
     std::cout << "=== 阶段 1：原始数据 ===" << std::endl;
     std::cout << "v (size: " << v.size() << ") 元素: ";
     for (size_t i = 0; i < v.size(); ++i) { std::cout << v[i] << " "; }
     std::cout << "\n\n";
-```
 
-
-```cpp
     std::cout << "=== 阶段 2：测试 erase (删除 Banana) ===" << std::endl;
     // 获取指向 "Banana" 的迭代器 (begin + 1)
     zyh::vector<std::string>::iterator it = v.begin() + 1;
@@ -1169,25 +946,16 @@ int main()
     std::cout << "\n";
     // 验证返回值是不是指向了原本 Banana 后面的 Cherry
     std::cout << "erase 返回的迭代器现在指向: " << *it << "\n\n";
-```
 
-
-```cpp
     std::cout << "=== 阶段 3：测试 pop_back 和 clear ===" << std::endl;
     v.pop_back(); // 删掉 Date
     std::cout << "pop_back 后元素: ";
     for (size_t i = 0; i < v.size(); ++i) { std::cout << v[i] << " "; }
     std::cout << "\n";
-```
 
-
-```cpp
     v.clear(); // 全部清空
     std::cout << "clear 后，size: " << v.size() << "，capacity: " << v.capacity() << std::endl;
-```
 
-
-```cpp
     return 0;
 }
 ```
@@ -1241,10 +1009,7 @@ New）**，一口气建起 3 座一模一样的房子！
                 {
                     reserve(n);
                 }
-```
 
-
-```cpp
                 while (size() < n)
                 {
                     push_back(val);
@@ -1260,26 +1025,17 @@ New）**，一口气建起 3 座一模一样的房子！
 #include <iostream>
 #include <string>
 #include "MyVector.h"
-```
 
-
-```cpp
 int main()
 {
     zyh::vector<std::string> v;
-```
 
-
-```cpp
     std::cout << "=== 阶段 1：测试 empty ===" << std::endl;
     if (v.empty())
     {
         std::cout << "刚初始化的 vector 是空的！(验证成功)\n\n";
     }
-```
 
-
-```cpp
     std::cout << "=== 阶段 2：填入初始数据 ===" << std::endl;
     v.push_back("Apple");
     v.push_back("Banana");
@@ -1287,10 +1043,7 @@ int main()
     std::cout << "元素: ";
     for (size_t i = 0; i < v.size(); ++i) { std::cout << v[i] << " "; }
     std::cout << "\n\n";
-```
 
-
-```cpp
     std::cout << "=== 阶段 3：测试 resize 放大 (带默认参数) ===" << std::endl;
     // 原本只有 2 个元素，要求扩到 5 个。会补充 3 个 "Hello"
     v.resize(5, "Hello");
@@ -1298,10 +1051,7 @@ int main()
     std::cout << "元素: ";
     for (size_t i = 0; i < v.size(); ++i) { std::cout << v[i] << " "; }
     std::cout << "\n\n";
-```
 
-
-```cpp
     std::cout << "=== 阶段 4：测试 resize 缩小 ===" << std::endl;
     // 从 5 个缩减到 1 个。尾部的 4 个元素必须被执行析构函数（安乐死）
     v.resize(1);
@@ -1309,20 +1059,14 @@ int main()
     std::cout << "元素: ";
     for (size_t i = 0; i < v.size(); ++i) { std::cout << v[i] << " "; }
     std::cout << "\n\n";
-```
 
-
-```cpp
     std::cout << "=== 阶段 5：清理门户 ===" << std::endl;
     v.clear();
     std::cout << "clear() 之后，empty() 返回: " << (v.empty() ? "true" : "false") << std::endl;
     std::cout << "此时 capacity (地皮) 依然是: " << v.capacity() << std::endl;
     
     std::cout << "\n=== 毕业典礼：程序完美结束，没有段错误！ ===" << std::endl;
-```
 
-
-```cpp
     return 0;
 }
 ```
@@ -1399,10 +1143,7 @@ MyVector.h
 
 ```cpp
 #pragma once
-```
 
-
-```cpp
 namespace zyh
 {
     template <class T>
@@ -1411,18 +1152,12 @@ namespace zyh
     public:
         typedef T *iterator;
         typedef const T *const_iterator;
-```
 
-
-```cpp
     private:
         iterator _start;
         iterator _finish;
         iterator _end_of_storage; // 可用空间尾（仓库后墙）
-```
 
-
-```cpp
     public:
         vector() : _start(nullptr), _finish(nullptr), _end_of_storage(nullptr)
         {
@@ -1431,25 +1166,16 @@ namespace zyh
         vector(size_t n, const T &value = T())
         {
             _start = (T *)::operator new(n * sizeof(T));
-```
 
-
-```cpp
             for (size_t i = 0; i < n; ++i)
             {
                 new (_start + i) T(value);
             }
-```
 
-
-```cpp
             _finish = _start + n;
             _end_of_storage = _start + n;
         }
-```
 
-
-```cpp
         // 析构函数
         ~vector()
         {
@@ -1459,41 +1185,26 @@ namespace zyh
                 {
                     it->~T();
                 }
-```
 
-
-```cpp
                 ::operator delete(_start);
                 _start = _finish = _end_of_storage = nullptr;
             }
         }
-```
 
-
-```cpp
         // 拷贝构造函数：深拷贝
         vector(const vector<T> &v)
         {
             _start = (T *)::operator new(v.capacity() * sizeof(T));
-```
 
-
-```cpp
             for (size_t i = 0; i < v.size(); ++i)
             {
                 new (_start + i) T(v._start[i]);
             }
-```
 
-
-```cpp
             _finish = _start + v.size();
             _end_of_storage = _start + v.capacity();
         }
-```
 
-
-```cpp
         // // 拷贝赋值运算符重载
         // vector<T> &operator=(const vector<T> &v)
         // {
@@ -1505,44 +1216,26 @@ namespace zyh
         //             {
         //                 it->~T();
         //             }
-```
 
-
-```cpp
         //             ::operator delete(_start);
         //         }
-```
 
-
-```cpp
         //         // 另起炉灶：根据别人的容量申请新地皮
         //         _start = (T *)::operator new(v.capacity() * sizeof(T));
-```
 
-
-```cpp
         //         for (size_t i = 0; i < v.size(); ++i)
         //         {
         //             new (_start + i) T(v._start[i]);
         //         }
-```
 
-
-```cpp
         //         _finish = _start + v.size();
         //         _end_of_storage = _start + v.capacity();
         //     }
-```
 
-
-```cpp
         //     // 返回自己的引用，支持连续赋值 (比如 v3 = v2 = v1;)
         //     return *this;
         // }
-```
 
-
-```cpp
         // 【现代级神仙写法】利用编译器和现有的拷贝构造函数
         vector<T> &operator=(vector<T> v) // 注意：这里故意【不用引用】，而是【传值】！！！
         {
@@ -1550,65 +1243,41 @@ namespace zyh
             swap(_start, v._start);
             swap(_finish, v._finish);
             swap(_end_of_storage, v._end_of_storage);
-```
 
-
-```cpp
             return *this;
         }
-```
 
-
-```cpp
         // 下标访问
         T &operator[](size_t i)
         {
             return _start[i];
         }
-```
 
-
-```cpp
         const T &operator[](size_t i) const
         {
             return _start[i];
         }
-```
 
-
-```cpp
         size_t size() const
         {
             return _finish - _start;
         }
-```
 
-
-```cpp
         size_t capacity() const
         {
             return _end_of_storage - _start;
         }
-```
 
-
-```cpp
         iterator begin()
         {
             return _start;
         }
-```
 
-
-```cpp
         iterator end()
         {
             return _finish;
         }
-```
 
-
-```cpp
         // 请求开辟新容量
         void reserve(size_t n)
         {
@@ -1618,10 +1287,7 @@ namespace zyh
                 T *tmp = (T *)::operator new(n * sizeof(T));
                 // 提前记下旧仓库里有多少件快递（极其关键！因为等下 _start 换成新仓库后，就没法用旧距离算了）
                 size_t old_size = size();
-```
 
-
-```cpp
                 if (_start != nullptr)
                 {
                     for (size_t i = 0; i < old_size; ++i)
@@ -1630,26 +1296,17 @@ namespace zyh
                         // 【工业级规范】旧仓库的快递搬走了，必须手动调用析构函数把它销毁
                         _start[i].~T();
                     }
-```
 
-
-```cpp
                     // 【工业级规范】因为是裸内存，退租时必须用 ::operator delete
                     ::operator delete(_start);
                 }
-```
 
-
-```cpp
                 _start = tmp;
                 _finish = _start + old_size;
                 _end_of_storage = _start + n;
             }
         }
-```
 
-
-```cpp
         // 尾部插入新元素
         void push_back(const T &x)
         {
@@ -1659,17 +1316,11 @@ namespace zyh
                 size_t new_capacity = capacity() == 0 ? 4 : capacity() * 2;
                 reserve(new_capacity);
             }
-```
 
-
-```cpp
             new (_finish) T(x); // 含义：就在 _finish 这个地址上，调用 T 的拷贝构造函数，原地生出一个新对象
             ++_finish;
         }
-```
 
-
-```cpp
         // 任意位置插入
         iterator insert(iterator pos, const T &x)
         {
@@ -1677,23 +1328,14 @@ namespace zyh
             {
                 // 搬家前，先算好 pos 距离 _start 的偏移量
                 size_t offset = pos - _start;
-```
 
-
-```cpp
                 size_t new_capacity = capacity() == 0 ? 4 : capacity() * 2;
                 reserve(new_capacity);
-```
 
-
-```cpp
                 // 搬家后，刷新 pos，让它指向新地皮上的正确位置！
                 pos = _start + offset;
             }
-```
 
-
-```cpp
             // 挪动数据：把 pos 及它后面的元素全部往后挪一格
             iterator end_it = _finish - 1;
             while (end_it >= pos)
@@ -1712,16 +1354,10 @@ namespace zyh
             }
             *pos = x;
             ++_finish;
-```
 
-
-```cpp
             return pos;
         }
-```
 
-
-```cpp
         // 任意位置删除
         iterator erase(iterator pos)
         {
@@ -1734,25 +1370,16 @@ namespace zyh
                     *(it - 1) = *it;
                     ++it;
                 }
-```
 
-
-```cpp
                 --_finish;
-```
 
-
-```cpp
                 _finish->~T();
             }
             // C++ 官方标准规定：erase 必须返回被删除元素的【下一个元素】的新位置
             // 因为后面的元素全往前挪了，所以原本的 pos 指向的正好就是新的下一个元素
             return pos;
         }
-```
 
-
-```cpp
         // 尾删函数
         void pop_back()
         {
@@ -1761,10 +1388,7 @@ namespace zyh
                 erase(_finish - 1);
             }
         }
-```
 
-
-```cpp
         // 清空所有元素
         void clear()
         {
@@ -1774,10 +1398,7 @@ namespace zyh
                 _finish->~T();
             }
         }
-```
 
-
-```cpp
         // 调整有效元素个数
         void resize(size_t n, const T &val = T())
         {
@@ -1797,20 +1418,14 @@ namespace zyh
                 {
                     reserve(n);
                 }
-```
 
-
-```cpp
                 while (size() < n)
                 {
                     push_back(val);
                 }
             }
         }
-```
 
-
-```cpp
         // 判断容器是否为空
         bool empty() const
         {
@@ -1828,20 +1443,14 @@ main.cpp
 #include <string>
 #include "MyVector.h"
 using namespace std;
-```
 
-
-```cpp
 void test1()
 {
     zyh::vector<int> v;
     // 阶段 1：初始状态
     cout << "--- 阶段 1 ---" << endl;
     cout << "Size: " << v.size() << ", Capacity: " << v.capacity() << endl;
-```
 
-
-```cpp
     // 阶段 2：连续插入 4 个元素
     v.push_back(10);
     v.push_back(20);
@@ -1849,18 +1458,12 @@ void test1()
     v.push_back(40);
     cout << "--- 阶段 2 ---" << endl;
     cout << "Size: " << v.size() << ", Capacity: " << v.capacity() << endl;
-```
 
-
-```cpp
     // 阶段 3：插入第 5 个元素（触发扩容！）
     v.push_back(50);
     cout << "--- 阶段 3 ---" << endl;
     cout << "Size: " << v.size() << ", Capacity: " << v.capacity() << endl;
-```
 
-
-```cpp
     // 阶段 4：遍历打印
     cout << "--- 阶段 4 元素内容 ---" << endl;
     // 利用我们刚学过的：iterator 就是原生指针，直接用它来遍历！
@@ -1870,33 +1473,21 @@ void test1()
     }
     cout << endl;
 }
-```
 
-
-```cpp
 void test2()
 {
     cout << "=== 阶段 1：构建 v1 ===" << endl;
     // 创建一个装了 3 个 "Hello" 的容器
     zyh::vector<string> v1(3, "Hello");
-```
 
-
-```cpp
     cout << "=== 阶段 2：触发深拷贝构建 v2 ===" << endl;
     // 这里会精准调用你刚刚手写的【拷贝构造函数】！
     zyh::vector<string> v2(v1);
-```
 
-
-```cpp
     cout << "=== 阶段 3：验证物理隔离 ===" << endl;
     // 给 v2 单独尾插一个新字符串，看看会不会影响 v1
     v2.push_back("World");
-```
 
-
-```cpp
     // 打印 v1
     cout << "v1 (size: " << v1.size() << ") 元素: ";
     for (zyh::vector<string>::iterator it = v1.begin(); it != v1.end(); ++it)
@@ -1904,10 +1495,7 @@ void test2()
         cout << *it << " ";
     }
     cout << endl;
-```
 
-
-```cpp
     // 打印 v2
     cout << "v2 (size: " << v2.size() << ") 元素: ";
     for (zyh::vector<string>::iterator it = v2.begin(); it != v2.end(); ++it)
@@ -1915,57 +1503,36 @@ void test2()
         cout << *it << " ";
     }
     cout << endl;
-```
 
-
-```cpp
     cout << "=== 阶段 4：程序结束，见证奇迹 ===" << endl;
     // v2 会先调用析构函数，销毁自己的地皮和字符串。
     // v1 会后调用析构函数，销毁自己的地皮和字符串。
     // 因为你写了深拷贝，这里绝对不会出现 Double Free（段错误）！程序将完美退出。
 }
-```
 
-
-```cpp
 void test3()
 {
     cout << "=== 阶段 1：准备测试数据 ===" << endl;
     // v1 是我们要被抄袭的“原件”
     zyh::vector<string> v1(2, "Apple");
-```
 
-
-```cpp
     // v3 是一个“老油条”，里面已经占用了地皮，存了 3 个 "Banana"
     zyh::vector<string> v3(3, "Banana");
-```
 
-
-```cpp
     cout << "=== 阶段 2：触发赋值运算符 ===" << endl;
     // 关键时刻！这里会触发 operator=
     // v3 必须先销毁自己的 3 个 "Banana"，退掉旧地皮，再去深拷贝 v1 的 2 个 "Apple"
     v3 = v1;
-```
 
-
-```cpp
     cout << "=== 阶段 3：测试连续赋值 (Chain Assignment) ===" << endl;
     zyh::vector<string> v4;
     // 这里先执行 v3 = v1，然后返回 v3 的引用，再执行 v4 = v3
     v4 = v3 = v1;
-```
 
-
-```cpp
     cout << "=== 阶段 4：验证物理隔离 ===" << endl;
     // 我们往 v3 里加点新东西，看看 v1 和 v4 会不会跟着变
     v3.push_back("Orange");
-```
 
-
-```cpp
     // --- 打印结果 ---
     cout << "v1 (size: " << v1.size() << ") 元素: ";
     for (zyh::vector<string>::iterator it = v1.begin(); it != v1.end(); ++it)
@@ -1973,55 +1540,37 @@ void test3()
         cout << *it << " ";
     }
     cout << endl;
-```
 
-
-```cpp
     cout << "v3 (size: " << v3.size() << ") 元素: ";
     for (zyh::vector<string>::iterator it = v3.begin(); it != v3.end(); ++it)
     {
         cout << *it << " ";
     }
     cout << endl;
-```
 
-
-```cpp
     cout << "v4 (size: " << v4.size() << ") 元素: ";
     for (zyh::vector<string>::iterator it = v4.begin(); it != v4.end(); ++it)
     {
         cout << *it << " ";
     }
     cout << endl;
-```
 
-
-```cpp
     cout << "=== 阶段 5：程序结束，见证奇迹 ===" << endl;
     // 程序退出时，v4, v3, v1 将依次调用析构函数。
     // 如果没有段错误（Core Dump），说明我们不仅没有 Double Free，也没有内存泄漏！
 }
-```
 
-
-```cpp
 void test4()
 {
     cout << "=== 阶段 1：测试 push_back 和 operator[] ===" << endl;
     zyh::vector<string> v;
-```
 
-
-```cpp
     // 连续放入 4 个元素，假设此时容量刚好达到了 4
     v.push_back("A");
     v.push_back("B");
     v.push_back("C");
     v.push_back("D");
-```
 
-
-```cpp
     cout << "原始元素: ";
     for (size_t i = 0; i < v.size(); ++i)
     {
@@ -2029,28 +1578,19 @@ void test4()
     }
     cout << endl
          << endl;
-```
 
-
-```cpp
     cout << "=== 阶段 2：触发致命危机 (扩容 + 插入) ===" << endl;
     // 此时 v 的 size 是 4，capacity 也是 4，仓库已满！
     // 我们获取一个指向第二个元素 "B" 的迭代器（此时它指向旧地皮）
     zyh::vector<string>::iterator it = v.begin() + 1;
-```
 
-
-```cpp
     cout << "准备在 'B' 的位置前面插入一个 'X'..." << endl;
     // 关键时刻！
     // insert 内部发现满载，会调用 reserve 申请新地皮并销毁旧地皮。
     // 如果没有我们的 offset 修复逻辑，这里继续使用 it 就会直接发生段错误崩溃！
     v.insert(it, "X");
     cout << "插入成功！没有发生崩溃！\n\n";
-```
 
-
-```cpp
     cout << "=== 阶段 3：验证挪动结果 ===" << endl;
     cout << "插入后 zyh::vector 大小: " << v.size() << "，容量: " << v.capacity() << endl;
     cout << "最终元素: ";
@@ -2060,10 +1600,7 @@ void test4()
     }
     cout << "\n";
 }
-```
 
-
-```cpp
 void test5()
 {
     zyh::vector<string> v;
@@ -2071,10 +1608,7 @@ void test5()
     v.push_back("Banana");
     v.push_back("Cherry");
     v.push_back("Date");
-```
 
-
-```cpp
     cout << "=== 阶段 1：原始数据 ===" << endl;
     cout << "v (size: " << v.size() << ") 元素: ";
     for (size_t i = 0; i < v.size(); ++i)
@@ -2082,23 +1616,14 @@ void test5()
         cout << v[i] << " ";
     }
     cout << "\n\n";
-```
 
-
-```cpp
     cout << "=== 阶段 2：测试 erase (删除 Banana) ===" << endl;
     // 获取指向 "Banana" 的迭代器 (begin + 1)
     zyh::vector<string>::iterator it = v.begin() + 1;
-```
 
-
-```cpp
     // 删除它，并接收返回的新迭代器
     it = v.erase(it);
-```
 
-
-```cpp
     cout << "删除后 v (size: " << v.size() << ") 元素: ";
     for (size_t i = 0; i < v.size(); ++i)
     {
@@ -2107,10 +1632,7 @@ void test5()
     cout << "\n";
     // 验证返回值是不是指向了原本 Banana 后面的 Cherry
     cout << "erase 返回的迭代器现在指向: " << *it << "\n\n";
-```
 
-
-```cpp
     cout << "=== 阶段 3：测试 pop_back 和 clear ===" << endl;
     v.pop_back(); // 删掉 Date
     cout << "pop_back 后元素: ";
@@ -2119,33 +1641,21 @@ void test5()
         cout << v[i] << " ";
     }
     cout << "\n";
-```
 
-
-```cpp
     v.clear(); // 全部清空
     cout << "clear 后，size: " << v.size() << "，capacity: " << v.capacity() << endl;
 }
-```
 
-
-```cpp
 void test6()
 {
     zyh::vector<string> v;
-```
 
-
-```cpp
     cout << "=== 阶段 1：测试 empty ===" << endl;
     if (v.empty())
     {
         cout << "刚初始化的 zyh::vector 是空的！(验证成功)\n\n";
     }
-```
 
-
-```cpp
     cout << "=== 阶段 2：填入初始数据 ===" << endl;
     v.push_back("Apple");
     v.push_back("Banana");
@@ -2156,10 +1666,7 @@ void test6()
         cout << v[i] << " ";
     }
     cout << "\n\n";
-```
 
-
-```cpp
     cout << "=== 阶段 3：测试 resize 放大 (带默认参数) ===" << endl;
     // 原本只有 2 个元素，要求扩到 5 个。会补充 3 个 "Hello"
     v.resize(5, "Hello");
@@ -2170,10 +1677,7 @@ void test6()
         cout << v[i] << " ";
     }
     cout << "\n\n";
-```
 
-
-```cpp
     cout << "=== 阶段 4：测试 resize 缩小 ===" << endl;
     // 从 5 个缩减到 1 个。尾部的 4 个元素必须被执行析构函数（安乐死）
     v.resize(1);
@@ -2184,19 +1688,13 @@ void test6()
         cout << v[i] << " ";
     }
     cout << "\n\n";
-```
 
-
-```cpp
     cout << "=== 阶段 5：清理门户 ===" << endl;
     v.clear();
     cout << "clear() 之后，empty() 返回: " << (v.empty() ? "true" : "false") << endl;
     cout << "此时 capacity (地皮) 依然是: " << v.capacity() << endl;
 }
-```
 
-
-```cpp
 int main()
 {
     // test1();

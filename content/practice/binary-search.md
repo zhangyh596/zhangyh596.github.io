@@ -54,10 +54,7 @@ int binarySearchLeft1(int* nums, int numsSize, int target)
             left = mid + 1;
         }
     }
-```
 
-
-```c
     if (left < numsSize && nums[left] == target)//这一步也很重要，因为数组里面可能根本就没有target
         return left;
     return -1;
@@ -137,10 +134,7 @@ int binarySearchRight1(int* nums, int numsSize, int target)
             right = mid - 1;
         }
     }
-```
 
-
-```c
     if (right >= 0 && nums[right] == target)
         return right;
     return -1;
@@ -204,10 +198,7 @@ int binarySearch(int* nums, int numsSize, int target)
 {
     if (nums == NULL || numsSize == 0)
         return -1;
-```
 
-
-```c
     int left = 0, right = numsSize - 1;
     while (left <= right)
     {
@@ -319,10 +310,7 @@ int binarySearchRight2(int* nums, int numsSize, int target)
             right = mid - 1;
         }
     }
-```
 
-
-```c
     if (left < numsSize && nums[left] == target)
         return left;
     return -1;
@@ -365,10 +353,7 @@ right)。这意味着只要区间内还有至少三个元素，循环继续
 int binarySearchLeft3(int* nums, int numsSize, int target)
 {
     if (nums == NULL || numsSize == 0) return -1; // 边界防御,否则最后查看nums[left]和nums[right]可能会出现越界访问
-```
 
-
-```c
     int left = 0, right = numsSize - 1;
     //至少有三个元素才循环
     while (left + 1 < right)

@@ -59,28 +59,19 @@ typedef struct TreeNode
 TreeNode* createNode(int value)
 {
     TreeNode* newNode = (TreeNode*)malloc(sizeof(TreeNode));
-```
 
-
-```c
     //检查是否malloc成功
     if (newNode == NULL)
     {
         perror("malloc failed");
         exit(1);//退出程序
     }
-```
 
-
-```c
     //正式初始化节点
     newNode->data = value;
     newNode->left = NULL;
     newNode->right = NULL;
-```
 
-
-```c
     return newNode;
 }
 ```
@@ -124,10 +115,7 @@ TreeNode* insertNode(TreeNode* root, int value)
     {
         return createNode(value);
     }
-```
 
-
-```c
     // 如果新来的值比当前节点的数据小，说明它该去左边
     if (value < root->data)
     {
@@ -206,10 +194,7 @@ TreeNode* searchNode(TreeNode* root, int target)
     {
         return root;
     }
-```
 
-
-```c
     // 如果目标比当前节点小，顺藤摸瓜去左边找
     if (target < root->data)
     {
@@ -268,10 +253,7 @@ TreeNode* findMin(TreeNode* root)
     {
         return NULL;
     }
-```
 
-
-```c
     while (root->left != NULL)
     {
         root = root->left;
@@ -293,10 +275,7 @@ TreeNode* deleteNode(TreeNode* root, int target)
     {
         return root;
     }
-```
 
-
-```c
     if (target < root->data)
     {
         // 目标在左边，去左子树里执行删除任务，并重新接好左边的绳子
@@ -363,26 +342,17 @@ BinaryTree.h
 
 ```c
 #pragma once
-```
 
-
-```c
 #include <stdio.h>
 #include <stdlib.h>
-```
 
-
-```c
 typedef struct TreeNode
 {
     int data;//数据域：用来存东西
     struct TreeNode* left;//指针域：指向左边子节点的指针
     struct TreeNode* right;//指针域：指向右边子节点的指针
 }TreeNode;
-```
 
-
-```c
 //创建新节点
 TreeNode* createNode(int value);
 //插入节点
@@ -404,56 +374,35 @@ BinaryTree.c
 
 ```c
 #define _CRT_SECURE_NO_WARNINGS 1
-```
 
-
-```c
 #include "BinaryTree.h"
-```
 
-
-```c
 TreeNode* createNode(int value)
 {
     TreeNode* newNode = (TreeNode*)malloc(sizeof(TreeNode));
-```
 
-
-```c
     //检查是否malloc成功
     if (newNode == NULL)
     {
         perror("malloc failed");
         exit(1);//退出程序
     }
-```
 
-
-```c
     //正式初始化节点
     newNode->data = value;
     newNode->left = NULL;
     newNode->right = NULL;
-```
 
-
-```c
     return newNode;
 }
-```
 
-
-```c
 TreeNode* insertNode(TreeNode* root, int value)
 {
     if (root == NULL)
     {
         return createNode(value);
     }
-```
 
-
-```c
     // 如果新来的值比当前节点的数据小，说明它该去左边
     if (value < root->data)
     {
@@ -469,10 +418,7 @@ TreeNode* insertNode(TreeNode* root, int value)
     // 如果新值等于当前节点的值，我们一般什么都不做，因为二叉搜索树通常不存重复数据
     return root;
 }
-```
 
-
-```c
 void inorderTraversal(TreeNode* root)
 {
     if (root != NULL)
@@ -485,20 +431,14 @@ void inorderTraversal(TreeNode* root)
         inorderTraversal(root->right);
     }
 }
-```
 
-
-```c
 TreeNode* searchNode(TreeNode* root, int target)
 {
     if (root == NULL || root->data == target)
     {
         return root;
     }
-```
 
-
-```c
     // 如果目标比当前节点小，顺藤摸瓜去左边找
     if (target < root->data)
     {
@@ -510,10 +450,7 @@ TreeNode* searchNode(TreeNode* root, int target)
         return searchNode(root->right, target);
     }
 }
-```
 
-
-```c
 void freeTree(TreeNode* root)
 {
     if (root != NULL)
@@ -523,10 +460,7 @@ void freeTree(TreeNode* root)
         free(root);
     }
 }
-```
 
-
-```c
 //辅助函数
 TreeNode* findMin(TreeNode* root)
 {
@@ -534,20 +468,14 @@ TreeNode* findMin(TreeNode* root)
     {
         return NULL;
     }
-```
 
-
-```c
     while (root->left != NULL)
     {
         root = root->left;
     }
     return root;
 }
-```
 
-
-```c
 TreeNode* deleteNode(TreeNode* root, int target)
 {
     // 递归终止条件：如果树是空的，或者一直找没找到这个数字
@@ -555,10 +483,7 @@ TreeNode* deleteNode(TreeNode* root, int target)
     {
         return root;
     }
-```
 
-
-```c
     if (target < root->data)
     {
         // 目标在左边，去左子树里执行删除任务，并重新接好左边的绳子
@@ -602,23 +527,14 @@ test.c
 
 ```c
 #define _CRT_SECURE_NO_WARNINGS 1
-```
 
-
-```c
 #include "BinaryTree.h"
-```
 
-
-```c
 int main()
 {
     TreeNode* root = NULL;
     printf("开始向二叉树中插入数字\n");
-```
 
-
-```c
     root = insertNode(root, 50);
     root = insertNode(root, 30);
     root = insertNode(root, 70);
@@ -626,17 +542,11 @@ int main()
     root = insertNode(root, 40);
     root = insertNode(root, 60);
     root = insertNode(root, 80);
-```
 
-
-```c
     printf("中序遍历打印的结果是：\n");
     inorderTraversal(root);
     printf("\n");
-```
 
-
-```c
     int target1 = 100;
     TreeNode* result1 = searchNode(root, target1);
     if (result1 != NULL)
@@ -647,24 +557,15 @@ int main()
     {
         printf("没有找到%d这个数字\n", target1);
     }
-```
 
-
-```c
     root = deleteNode(root, 20);
     printf("删除20之后的中序遍历：\n");
     inorderTraversal(root);
     printf("\n");
-```
 
-
-```c
     freeTree(root);
     printf("二叉树成功被释放\n");
-```
 
-
-```c
     return 0;
 }
 ```
