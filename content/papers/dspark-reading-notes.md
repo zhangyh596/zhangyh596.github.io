@@ -3,7 +3,7 @@ title: "初读 DSpark：从多猜几个 token，到怎样才真正更快"
 date: "2026-10-21"
 draft: false
 description: "记录目前对 DSpark 半自回归草稿、置信度调度与系统落地的理解。"
-categories: ["论文阅读"]
+categories: ["论文心得"]
 tags: ["LLM 推理", "投机解码"]
 ---
 
