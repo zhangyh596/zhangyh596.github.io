@@ -163,4 +163,4 @@ Confidence Head 为这个决策提供估计。假设前两个位置的条件接�
 
 ## 参考
 
-- [DSpark: Confidence-Scheduled Speculative Decoding with Semi-Autoregressive Generation](https://arxiv.org/abs/2607.05147v1)（DeepSeek官方论文），重点参考了 §2–5、图 1–8；附录 A 是后续需要继续学习的部分。
+- [DSpark: Confidence-Scheduled Speculative Decoding with Semi-Autoregressive Generation](https://arxiv.org/abs/2607.05147v1)（DeepSeek官方论文），重点参考了 §2–5、图 1–8。
