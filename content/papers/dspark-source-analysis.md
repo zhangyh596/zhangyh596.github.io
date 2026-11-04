@@ -278,7 +278,11 @@ N 替代 L，L/M 不保留；N 也还没有在自身位置经过 Target 前向�
 
 这篇还没有给出具体 checkpoint 的运行结果，也没有验证采样分布、数值等价或论文性能。后续若补实验，需要同时记录 Target/Draft revision、配置、输入、环境和原始输出。
 
-vLLM、SGLang 的请求调度、分页缓存和异步执行目前还没有读到同样细的程度。下一篇结合 gLLM 的集成工作，再追这些职责怎样落入现有引擎，并用实际测试说明实现到了哪一步。
+vLLM、SGLang 的请求调度、分页缓存和异步执行目前没有同时进行分析。下一篇结合 gLLM 的集成工作，再追这些职责怎样落入现有引擎，并用实际测试说明实现到了哪一步。
+
+[![DeepSpec Qwen3 DSpark：一次生成的完整流程与状态闭环](/images/papers/dspark/deepspec-generation-flow.png)](/images/papers/dspark/deepspec-generation-flow.png)
+
+*全文流程总览：包含正常生成回路、缓存更新、EOS 与长度终止分支。点击图片可查看高清原图。*
 
 ## 源码入口
 
