@@ -282,7 +282,7 @@ vLLM、SGLang 的请求调度、分页缓存和异步执行目前没有同时进
 
 [![DeepSpec Qwen3 DSpark：一次生成的完整流程与状态闭环](/images/papers/dspark/deepspec-generation-flow.png)](/images/papers/dspark/deepspec-generation-flow.png)
 
-*全文流程总览：包含正常生成回路、缓存更新、EOS 与长度终止分支。点击图片可查看高清原图。*
+*全文流程总览：包含正常生成回路、缓存更新、EOS 与长度终止分支。*
 
 ## 源码入口
 
