@@ -103,7 +103,7 @@ Draft 输入：J / mask / mask
 
 所以三行可以产生三个候选，送给 Target 的完整验证输入则是 `J/K/L/M`，共四行。不能因为首行输入了 anchor，就直接把这行预测丢掉。[输入块构造][propose]、[候选封装][proposal]。
 
-这也是阅读不同实现时需要单独核对的约定：草稿查询行数、候选数、验证输入数，并不是同一个量。
+因此，草稿查询行数为 W，实际提交的候选数为 n ≤ W（可能因为置信度截断而小于 W），Target 的验证输入数为 n+1，其中额外的一项是 anchor。这也是阅读不同实现时需要单独核对的约定：草稿查询行数、候选数、验证输入数，并不是同一个量。
 
 ### 相同的 mask，怎样产生不同位置的特征
 
@@ -120,7 +120,7 @@ Mask 是输入占位 token，没有真实候选的身份。同一个 mask ID 查
 
 预测块的 Q 读取上下文与块内 K/V；不同位置经 RoPE 后，与上下文的匹配关系可以不同，因此并不需要等到 Markov Head 才能区分位置。这不意味着任何输入下输出向量都必然不同。
 
-这条推理路径传入 `attention_mask=None`、`is_causal=False`。块内位置可以共同计算，但此时真正的 K/L/M 还没被采样出来。Mask token 也不等于“屏蔽这个位置”的 attention mask。[Attention][attention]、[Draft forward][draft-forward]。
+这条推理路径传入 `attention_mask=None`、`is_causal=False`。也就是 Draft backbone 接收 [J, MASK, MASK]时，这条路径没有额外的 attention mask，也不启用因果限制，因此块内位置可以互相关注。但它们关注的是 anchor 和占位 token 的表示，此时候选 K/L/M 尚未产生。随后，Markov 头在采样过程中依次引入实际选出的前一个 token，得到三个候选。[Attention][attention]、[Draft forward][draft-forward]。
 
 ### 为什么 Draft KV 先增长，再 crop
 
