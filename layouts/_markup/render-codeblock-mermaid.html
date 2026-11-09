@@ -1,0 +1,9 @@
+{{/* Keep the loader with the diagram: PaperMod caches its footer across pages. */}}
+<pre class="mermaid{{ if eq .Page.Params.mermaidStyle "paper" }} mermaid-paper{{ end }}">{{ .Inner | htmlEscape | safeHTML }}</pre>
+{{- if not (.Page.Store.Get "mermaidScriptIncluded") -}}
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@12.3.0/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ startOnLoad: true, securityLevel: 'strict', theme: 'neutral' });
+</script>
+{{- .Page.Store.Set "mermaidScriptIncluded" true -}}
+{{- end -}}

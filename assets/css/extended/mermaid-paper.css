@@ -1,0 +1,38 @@
+/* Opt-in paper-style diagrams; ordinary code blocks retain their existing style. */
+.post-content pre.mermaid-paper {
+    padding: 14px 10px;
+    margin: 1.6rem 0;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    background: #ffffff !important;
+    color: #263244;
+    line-height: 1.45;
+    text-align: center;
+    white-space: normal;
+    overflow-x: auto;
+}
+.post-content pre.mermaid-paper svg {
+    display: block;
+    height: auto;
+    margin-inline: auto;
+}
+/* Keep both node text and edge labels at normal weight. */
+.post-content pre.mermaid-paper,
+.post-content pre.mermaid-paper svg,
+.post-content pre.mermaid-paper svg :is(text, tspan, span, p, div) {
+    font-weight: 400 !important;
+    font-synthesis: none;
+}
+.post-content pre.mermaid-paper .edgeLabel {
+    font-size: 13px;
+}
+.post-content pre.mermaid-paper .nodeLabel p {
+    line-height: 1.45;
+    word-break: normal;
+    overflow-wrap: normal;
+}
+@media screen and (max-width: 600px) {
+    .post-content pre.mermaid-paper {
+        padding: 10px 6px;
+    }
+}

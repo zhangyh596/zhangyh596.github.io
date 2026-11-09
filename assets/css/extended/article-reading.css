@@ -62,6 +62,50 @@ button:focus-visible {
     line-height: 1.6;
 }
 
+.header-tools {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+}
+
+.header-search {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    min-width: 0;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--entry);
+}
+
+.header-search:focus-within {
+    border-color: var(--article-accent);
+    outline: 2px solid color-mix(in srgb, var(--article-accent) 25%, transparent);
+    outline-offset: 2px;
+}
+
+.header-search input {
+    flex: 1;
+    min-width: 0;
+    padding: 0.7rem 1rem;
+    color: var(--primary);
+    font-size: 16px;
+}
+
+.header-search button {
+    margin: 0.25rem;
+    padding: 0.45rem 0.8rem;
+    border-radius: 8px;
+    color: var(--article-heading);
+    background: var(--article-table-head);
+    white-space: nowrap;
+}
+
+.header-tools .theme-toggle {
+    flex-shrink: 0;
+}
+
 .logo a {
     color: var(--article-heading);
     font-size: clamp(1.2rem, 3vw, 1.5rem);
@@ -211,6 +255,68 @@ button:focus-visible {
 
 .pagination a {
     background: var(--article-heading);
+}
+
+.pagination-numbered {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.pagination-numbered .prev {
+    grid-column: 1;
+    justify-self: start;
+}
+
+.pagination-numbered .next {
+    grid-column: 3;
+    justify-self: end;
+}
+
+.page-numbers {
+    grid-column: 2;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.4rem;
+}
+
+.pagination-numbered .page-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 36px;
+    padding: 0 0.5rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--article-heading);
+    background: var(--entry);
+    font-size: 14px;
+}
+
+.pagination-numbered [aria-current="page"] {
+    border-color: var(--article-heading);
+    color: var(--theme);
+    background: var(--article-heading);
+}
+
+.pagination-numbered .page-number[href]:hover {
+    border-color: var(--article-accent);
+    color: var(--article-accent);
+}
+
+@media screen and (max-width: 480px) {
+    .pagination-numbered .prev,
+    .pagination-numbered .next {
+        grid-row: 1;
+    }
+
+    .page-numbers {
+        grid-column: 1 / -1;
+        grid-row: 2;
+    }
 }
 
 .footer {
