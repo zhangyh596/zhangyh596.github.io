@@ -37,7 +37,7 @@ mermaidStyle: paper
 
 第一篇介绍过 DSpark 的置信度调度，但这里的最小路径还没有接入它。模型会计算 confidence，执行端只取候选 ID，没有用返回的分数缩短验证长度。因此，本文讲的是**固定长度的 greedy 最小闭环**。[候选执行入口][draft-call]
 
-源码状态和验证状态也需要分开：上述主线在固定版本中**已经实现、已经合入**；已有的**历史验证**对应合入前快照 `80118bd`。文章基线 `c93226d` 与该快照存在三处 prefix-hash 相关差异，目前收集的材料中尚未取得合入树的直接复测记录。第七章再展开测试覆盖与版本对应；这里不将“已合入”写成“已经重新验证通过”。
+本文的“已实现、已合入”均指上述固定版本。历史正确性报告对应合入前快照 `80118bd`，尚未取得 `c93226d` 合入树的直接复测记录；版本差异与验证范围见第七章。
 
 
 ## 2. 请求进入 gLLM：复用原有流程，在执行端接入 DSpark
@@ -133,9 +133,9 @@ flowchart TB
     class C compute;
 ```
 
-*图 1：一次阶段执行从请求到结果回传的职责关系。图中省略队列和 IPC 实现；请求未结束时，执行端还会继续选择下一阶段。*
+*图 1：一次阶段执行从请求到结果回传的职责关系。提交和发送都由 Worker.process_output 驱动，前者完成后才执行后者；图中省略了结果队列和 IPC 实现。*
 
-其中，`schedule_dspark` 根据请求的 `phase` 选择 prefill、bootstrap、verify 或 tail，并设置本次输入长度；Runner 返回 `DSparkStepResult`，`process_dspark_output` 再调用对应的 commit 函数，把新发布的 token 放入结果包，决定请求继续排队还是结束。[阶段选择与结果处理][runtime]、[Runner 阶段分派][runner-dispatch]
+`schedule_dspark` 根据请求的 `phase` 选择 prefill、bootstrap、verify 或 tail，并设置本次输入长度。Runner 返回的 `DSparkStepResult` 先进入 Scheduler 的结果队列；随后 `Worker.process_output` 驱动 Scheduler 的结果处理分支，在其中调用对应 commit、生成结果包并决定请求继续排队还是结束，最后调用 `comm.send_output` 回传。[阶段选择][phase-select]、[结果入队与分派][scheduler-finalize]、[Worker 提交与发送][worker-finalize]
 
 这里先记住一个边界：**执行端拿到模型计算结果后，还要经过 commit，才会向前端发送正式输出。** 前端追加收到的 token，是在更新前端自己的请求记录；它与执行端的状态提交处于不同位置。[阶段执行与提交][runtime]、[前端结果处理][frontend-output]
 
@@ -186,11 +186,11 @@ Draft 拥有自己的 Backbone、投影、归一化、Markov Head 和 Confidence
 
 *表中描述对应步骤提交后的状态，假设首 token 没有触发结束。依据固定源码整理，不是实测 trace。*
 
-如果 y0 已经满足 EOS 或输出预算条件，请求会结束，不再执行 bootstrap。对于继续生成的请求，上面的启动步骤已经备齐第一次 Draft 调用的两类输入：**待补入历史的 y0 taps，以及启动当前候选块的私有 anchor y1。**[运行时提交与结束判断][runtime]、[Prompt 提交][prompt-commit]、[完成条件][finish]
+如果 y0 已经满足 EOS 或输出预算条件，请求会结束，不再执行 bootstrap。bootstrap 后，只有完整 verify 窗口仍放得下，才会进入接下来的 Draft 调用；否则会转向第六章介绍的 tail。进入 verify 时的两类输入是：**待补入历史的 y0 taps，以及启动当前候选块的私有 anchor y1。**[运行时提交与结束判断][runtime]、[Prompt 提交][prompt-commit]、[窗口检查][verify-fits]
 
 ## 4. Draft 提候选：补入新特征，再生成七个 proposal
 
-Bootstrap 已经留下 y0 的 taps 和私有 anchor y1。接下来的问题是：怎样让 Draft 利用这些数据，提出当前一轮的候选？
+下面讨论 bootstrap 后进入 verify 的情况：y0 的 taps 和私有 anchor y1 已准备好，Draft 怎样利用这些数据提出当前一轮的候选？
 
 从这里开始，用 a 统称当前私有 anchor；第一次进入候选生成时，a 就是上一章的 y1。执行入口从请求状态中取出 pending 和 anchor，先调用 Backbone，再调用 head：
 
@@ -286,7 +286,7 @@ flowchart TB
 
 `[a, d1, d2, d3, d4, d5, d6, d7]`。[Head 的位置对齐][draft-head]
 
-若用 L 表示 taps 层数、H 表示配置中的 hidden size、U 表示本轮新增 taps 行数，关键交接形状是 `pending_hidden: [1,U,L*H]`、`draft_hidden: [1,7,H]`、`proposed: [1,8]`。这里的维度关系来自源码构造，尚未代入历史 checkpoint 的具体尺寸。[上下文投影][draft-init]、[Draft context 追加][draft-context]、[Backbone 与 head][draft-forward]
+若用 L 表示 taps 层数、H 表示配置中的 hidden size、U 表示本轮新增 taps 行数，关键交接形状是 `pending_hidden: [1,U,L*H]`、`draft_hidden: [1,7,H]`、`proposed: [1,8]`。这里的维度关系来自源码构造，尚未代入历史 checkpoint 的具体尺寸。[上下文投影][draft-init]、[Draft context 追加][draft-context]、[Backbone 输出][draft-forward]、[Head 输出][draft-head]
 
 执行端随后只取 `proposed`，转为临时验证输入。head 返回的 logits 和 confidence 都被忽略；这条路径没有按 confidence 截断。Target 接收到的是候选 ID 及其 input_data，仍要自己计算验证结果。[验证输入交接][verify-execute]
 
@@ -332,7 +332,7 @@ verifier 此时返回三项后续所需的数据：
 
 运行时处理阶段结果时，调用 `commit_dspark_verify_step`。它根据可接受前缀、EOS 和剩余预算决定实际保留的输入数 r，先提交相应 Target 状态，再追加正式 token、推进 `computed_token_num`。对于上面没有触发结束的例子，r=1+n=3，新发布的就是 `[a,d1,d2]`。[Verify 提交][verify-commit]
 
-z 会存入请求的 `state.anchor`，留到下一次 verify 或 tail 作为输入消费后发布。即使七个 proposal 全被接受，最后一行预测也仍然作为下一 anchor 保存，不在本次 commit 里额外追加。[Verify 提交][verify-commit]、[Tail 提交][tail-commit]
+在继续生成的分支中，z 会存入请求的 `state.anchor`，留到下一次 verify 或 tail 作为输入消费后发布。七个 proposal 全被接受且请求尚未结束时，最后一行预测也作为下一 anchor 保存，不在本次 commit 里额外追加；结束分支则清空它。[Verify 提交][verify-commit]、[Tail 提交][tail-commit]
 
 因此，这份实现需要分别数清“接受了几个 proposal”“提交了几个输入”和“下一步预测是什么”。它使用 greedy 前缀比较，没有概率拒绝采样或残差分布重采样；不能直接把参考实现里的一次输出动作套到这里。[Target 验证][target-verify]
 
@@ -425,7 +425,7 @@ commit 后 Target 正式进度已经到 T0+3，Draft 仍停在 T0；中间这三
 
 Target 验证计算了整块输入，所以缓存中可能已经写入后来没有提交的位置。这个路径没有按拒绝 token 数逐个释放物理 slot，也没有在每轮 commit 后裁掉页表；正式进度仍只推进 r 个输入。[Target 验证][target-verify]、[Verify 提交][verify-commit]、[联合预留][cache-reserve]
 
-下一轮从新的 `computed_token_num` 准备位置、序列长度和写入映射。本例起点是 T0+3，后续输入会从这里重新写入；页里残留的旧后缀字节，不能仅因曾被计算就成为已确认历史。预留容量、已发生的写入和允许继续使用的前缀，需要分别看。[位置与长度构造][input-progress]、[写入映射][slot-mapping]
+下一轮的输入位置、序列长度和写入映射根据新的 `computed_token_num` 重新构造。本例 metadata 的起点是 T0+3，slot mapping 也从对应位置生成；页里残留的旧后缀字节，不能仅因曾被计算就成为已确认历史。这里核对的是有效进度和映射的构造，具体写入/读取还依赖底层 kernel 契约。[位置与长度构造][input-progress]、[写入映射][slot-mapping]
 
 本文解释到这层提交和 metadata 协议。**[待核实]** 外部 attention kernel 的完整写入/因果读取契约尚未逐项审计，不能由上述调用关系宣称所有缓存行为都已证明。
 
@@ -459,7 +459,7 @@ tail 不再运行 Draft，也不收集新的 taps。它让 Target 消费当前 a
 | 真实权重内部驱动 | `08cc83b` | 15/15 输出 IDs 与停止原因一致，并保存实际 verify 轮记录 | 模型加载和内部执行/commit 闭环；没有覆盖正常 LLM 构造及 Worker 启动 |
 | 真实权重正常 Engine 低层入口 | `80118bd` | 15/15 完整输出 IDs 与停止原因一致 | LLM 构造、spawn、Worker/Runner 初始化、allocate/add/schedule 到 IPC 输出 |
 
-配置测试的 49 passed、定向测试的 43 passed 都是 458 的子集，不能相加。测试源码中的 [内部多轮对照][execution-test]、[Worker/Scheduler 集成对照][runtime-test] 确实运行模型模块，但对应 fixture 使用小模型和合成权重；这部分证据要与真正加载 checkpoint 的生成验证分开。[Fixture 构造][tiny-fixture]
+配置测试的 49 passed、定向测试的 43 passed 都是 458 的子集，不能相加。测试源码中的 [内部多轮对照][execution-test]、[Worker/Scheduler 集成对照][runtime-test] 运行实际模型模块，但对应 fixture 使用小模型和合成权重，部分轮还会替换候选来覆盖不同接受边界；它们与真正加载 checkpoint 的生成验证分开。[Fixture 构造][tiny-fixture]
 
 正常低层入口的真实权重验证使用 NVIDIA A100 80GB PCIe，Target 为 `Qwen3.8-27B-FP8`，Draft 为 `Qwen3.8-27B-DSpark` 并按 BF16 加载。运行条件是 TP=PP=DP=1、FA3 eager、maxd=1，activation/KV/conv 为 BF16，temporal state 为 FP32；请求采用 greedy，repetition_penalty=1。[^validation-records]
 
@@ -473,7 +473,7 @@ tail 不再运行 Draft，也不收集新的 taps。它让 Target 消费当前 a
 
 源码哈希对照确认，组件记录中的 573 个 Git 跟踪文件全部匹配 `80118bd`，正常入口归档也保存了这一份源文件树，没有混入后续 batching 代码。
 
-这份快照与文章基线 `c93226d` 相比，有三处 prefix-hash 相关差异：`python/runtime/memory_manager.py` 以及两个 prefix-cache 测试文件。DSpark 的主要执行、验证和接线文件相同，但仍不能据此将旧日志写成合入树的新测试结果。[两个版本的差异][tested-to-baseline]
+直接比较这两棵源码树，三处差异分别位于 `python/runtime/memory_manager.py`、`tests/test_native_prefix_cache.py` 和 `tests/test_prefix_cache_reuse.py`，内容与 prefix hash 相关。DSpark 的主要执行、验证和接线文件相同，但仍不能据此将旧日志写成合入树的新测试结果。[两棵源码树的直接差异][tested-to-baseline]
 
 > **[待核实]** 当前材料中没有 `c93226d` 合入树的直接复测记录。已有证据支持指定历史快照、模型配置和样例下的输出一致，不构成所有输入、模型精度或后端上的普遍等价证明。
 
@@ -484,7 +484,7 @@ tail 不再运行 Draft，也不收集新的 taps。它让 Target 消费当前 a
 
 正常入口记录中还有一个退出时的 semaphore cleanup warning：所有请求完成后，验证脚本主动终止其启动的 Worker，随后出现 `resource_tracker` 提示。它不能单独确认请求级资源泄漏，也不能作为优雅停服已经验证的证据；这部分清理行为仍需专门检查。
 
-完整 GitHub Checks/Actions 的通过记录同样 **[待核实]**。现有依据是用户历史执行保留的日志、JUnit 和结果报告；已有的有限 CI 查询没有提供完整 CI 通过证明。HTTP、`LLM.generate`、长期运行及完整失败生命周期，也没有被这次低层入口对照覆盖。
+完整 GitHub Checks/Actions 的通过记录同样 **[待核实]**。现有依据是历史运行保留的日志、JUnit 和结果报告；已有的有限 CI 查询没有提供完整 CI 通过证明。HTTP、`LLM.generate`、长期运行及完整失败生命周期，也没有被这次低层入口对照覆盖。
 
 这些记录回答的是指定条件下的正确性问题。这里没有时延、吞吐或端到端加速对照，不能由 token 对齐、接受长度或测试通过数推导性能收益。[^validation-records]
 
@@ -497,7 +497,7 @@ tail 不再运行 Draft，也不收集新的 taps。它让 Target 消费当前 a
 | 已实现 | 正常低层请求接线、Target taps、真实 Draft proposal、greedy verify、正式 commit、状态延续与 tail/结束处理 |
 | 已合入 | 上述主线属于文章固定的 `c93226d` 版本 |
 | 已验证 | `80118bd`、`08cc83b` 各自记录范围内的组件断言和真实权重对照；不是任意版本的通用结论 |
-| 尚未完成（本文基线） | runtime 的 confidence 截断/STS 动态调度，以及通用随机采样验证；模型返回 confidence 不等于这些能力已经接通 |
+| 尚未完成（本文基线） | runtime 的 confidence 截断、STS 校准与动态验证预算，以及通用随机采样验证；模型返回 confidence 不等于这些能力已经接通 |
 | 尚未验证 | **[待核实]** 合入树直接复测、完整 CI、更多配置、长时稳定性、完整服务生命周期及性能 |
 | 不在本篇展开 | 多活动请求 batching、多 GPU、完整 HTTP、Abort/Preempt、分配器优化，以及 vLLM/SGLang 对比 |
 
@@ -511,7 +511,7 @@ tail 不再运行 Draft，也不收集新的 taps。它让 Target 消费当前 a
 
 这些是后续文章和实验的问题清单。本文先把模型接口、结果提交与跨轮状态的关系固定下来，后续改变其中一环时，就有一份可以回查的执行地图。
 
-[^validation-records]: 历史证据来自本地保留的三份归档：2026-10-28 的 `pr2-6c-user-r2-reports.tar.gz`（JUnit 与测试日志）、`pr2-6c-entry-user-r3-reports.tar.gz`（两模式完整输出、入口日志与源码 manifest），以及 2026-10-27 的 `pr326-row-head-fix-user-r1-reports.tar.gz`（内部真实权重逐轮报告）。原始日志未随本文公开上传；结果按各自已测快照引用，不代表本次重跑。
+[^validation-records]: 历史证据来自本地保留的三份归档：2026-10-28 的 `pr2-6c-user-r2-reports.tar.gz`（JUnit 与测试日志）、`pr2-6c-entry-user-r3-reports.tar.gz`（两模式完整输出、入口日志与源码 manifest），以及 2026-10-27 的 `pr326-row-head-fix-user-r1-reports.tar.gz`（内部真实权重逐轮报告）。原始日志未随本文公开上传；结果按各自已测快照引用，不代表本次重跑。 公开摘要见 [PR #327][integration-pr]；本文的测试数量、输出数组和源码归属另经原始归档核查。
 
 [baseline]: https://github.com/gty111/gLLM/commit/c93226d16bf62f6e13dd9bfc7ad2d9a526ac1416 "文章源码基线；00_scope.md §2"
 [config]: https://github.com/gty111/gLLM/blob/c93226d16bf62f6e13dd9bfc7ad2d9a526ac1416/python/runtime/config.py#L79-L118 "EngineConfig.__post_init__，python/runtime/config.py:79–118"
@@ -557,7 +557,10 @@ tail 不再运行 Draft，也不收集新的 taps。它让 Target 消费当前 a
 [cache-free]: https://github.com/gty111/gLLM/blob/c93226d16bf62f6e13dd9bfc7ad2d9a526ac1416/python/runtime/memory_manager.py#L1712-L1729 "MemoryManager.free_dspark_cache / free，python/runtime/memory_manager.py:1712–1729"
 [tested-engine]: https://github.com/gty111/gLLM/commit/80118bd0a89af6cd4aa8bf98596e5f953b4bba65 "正常入口历史已测快照；05_validation.md §2"
 [tested-core]: https://github.com/gty111/gLLM/commit/08cc83bce84b225668b551fc8adc82f1cf285308 "内部执行核心历史已测快照；05_validation.md §2"
-[tested-to-baseline]: https://github.com/gty111/gLLM/compare/80118bd0a89af6cd4aa8bf98596e5f953b4bba65...c93226d16bf62f6e13dd9bfc7ad2d9a526ac1416 "已测快照到文章基线差异；05_validation.md §2.3"
+[tested-to-baseline]: https://github.com/gty111/gLLM/compare/80118bd0a89af6cd4aa8bf98596e5f953b4bba65..c93226d16bf62f6e13dd9bfc7ad2d9a526ac1416 "已测快照到文章基线差异；05_validation.md §2.3"
 [execution-test]: https://github.com/gty111/gLLM/blob/c93226d16bf62f6e13dd9bfc7ad2d9a526ac1416/tests/test_qwen38_dspark.py#L3313-L3479 "test_dspark_execution_matches_greedy_with_controlled_and_real_draft，tests/test_qwen38_dspark.py:3313–3479"
 [runtime-test]: https://github.com/gty111/gLLM/blob/c93226d16bf62f6e13dd9bfc7ad2d9a526ac1416/tests/test_qwen38_dspark.py#L3650-L3801 "test_dspark_worker_scheduler_matches_greedy_with_controlled_and_real_draft，tests/test_qwen38_dspark.py:3650–3801"
 [tiny-fixture]: https://github.com/gty111/gLLM/blob/c93226d16bf62f6e13dd9bfc7ad2d9a526ac1416/tests/test_qwen38_dspark.py#L1184-L1284 "_hybrid_target_fixture，tests/test_qwen38_dspark.py:1184–1284"
+[worker-finalize]: https://github.com/gty111/gLLM/blob/c93226d16bf62f6e13dd9bfc7ad2d9a526ac1416/python/workers/worker.py#L707-L711 "Worker.process_output：提交处理返回后发送结果包"
+[scheduler-finalize]: https://github.com/gty111/gLLM/blob/c93226d16bf62f6e13dd9bfc7ad2d9a526ac1416/python/scheduling/scheduler.py#L350-L389 "Scheduler.add_next_tokens / process_output：入队与 DSpark 结果分派"
+[integration-pr]: https://github.com/gty111/gLLM/pull/327 "已合入状态与公开历史验证摘要；以归档复核为准"
